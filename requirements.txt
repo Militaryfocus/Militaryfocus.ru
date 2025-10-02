@@ -1,0 +1,15 @@
+Flask>=2.3.0
+Flask-SQLAlchemy>=3.0.0
+Flask-Login>=0.6.0
+Flask-WTF>=1.1.0
+Flask-Migrate>=4.0.0
+Flask-Admin>=1.6.0
+WTForms>=3.0.0
+Werkzeug>=2.3.0
+python-dotenv>=1.0.0
+Pillow>=9.0.0
+email-validator>=2.0.0
+bcrypt>=4.0.0
+python-slugify>=8.0.0
+markdown>=3.4.0
+bleach>=6.0.0
