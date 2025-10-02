@@ -21,3 +21,6 @@ textstat>=0.7.0
 nltk>=3.8.0
 transformers>=4.30.0
 torch>=2.0.0
+psutil>=5.9.0
+lxml>=4.9.0
+beautifulsoup4>=4.12.0
