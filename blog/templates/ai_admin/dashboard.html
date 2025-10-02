@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+
+{% block title %}ИИ Панель - МойБлог{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">
+        <i class="fas fa-robot me-2 text-primary"></i>ИИ Панель управления контентом
+    </h1>
+    <div>
+        <a href="{{ url_for('ai_admin.ai_settings') }}" class="btn btn-outline-primary me-2">
+            <i class="fas fa-cog me-2"></i>Настройки
+        </a>
+        <a href="{{ url_for('ai_admin.content_analytics') }}" class="btn btn-info">
+            <i class="fas fa-chart-bar me-2"></i>Аналитика
+        </a>
+    </div>
+</div>
+
+<!-- Статус ИИ системы -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert {% if stats.ai_enabled %}alert-success{% else %}alert-warning{% endif %}">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-{% if stats.ai_enabled %}check-circle{% else %}exclamation-triangle{% endif %} fa-2x me-3"></i>
+                <div>
+                    <h5 class="mb-1">
+                        Статус ИИ системы: 
+                        {% if stats.ai_enabled %}
+                            <span class="text-success">Активна</span>
+                        {% else %}
+                            <span class="text-warning">Отключена</span>
+                        {% endif %}
+                    </h5>
+                    <p class="mb-0">
+                        {% if stats.ai_enabled %}
+                            ИИ система работает и готова к генерации контента
+                        {% else %}
+                            ИИ система отключена. Включите в настройках для автоматической генерации контента
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ stats.total_ai_posts }}</h4>
+                        <p class="mb-0">ИИ Постов всего</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-robot fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-gradient-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ stats.ai_posts_today }}</h4>
+                        <p class="mb-0">Сегодня создано</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-calendar-day fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ stats.ai_comments }}</h4>
+                        <p class="mb-0">ИИ Комментариев</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-comments fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-gradient-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ "%.1f"|format(stats.content_quality_avg * 100) }}%</h4>
+                        <p class="mb-0">Качество контента</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-star fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Генерация контента -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-magic me-2"></i>Генерация контента
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Одиночная генерация -->
+                <form method="POST" action="{{ url_for('ai_admin.generate_single_post') }}" class="mb-4">
+                    <h6 class="mb-3">Создать один пост</h6>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Категория (опционально)</label>
+                        <select class="form-select" name="category">
+                            <option value="">Случайная категория</option>
+                            <option value="технологии">Технологии</option>
+                            <option value="наука">Наука</option>
+                            <option value="общество">Общество</option>
+                            <option value="бизнес">Бизнес</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Тема (опционально)</label>
+                        <input type="text" class="form-control" name="topic" 
+                               placeholder="Например: искусственный интеллект">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-plus me-2"></i>Создать пост
+                    </button>
+                </form>
+                
+                <hr>
+                
+                <!-- Массовая генерация -->
+                <form method="POST" action="{{ url_for('ai_admin.bulk_generate_posts') }}">
+                    <h6 class="mb-3">Массовая генерация</h6>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Количество постов</label>
+                        <input type="number" class="form-control" name="num_posts" 
+                               value="5" min="1" max="50">
+                        <div class="form-text">Максимум 50 постов за раз</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-layer-group me-2"></i>Создать несколько постов
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Управление контентом -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tools me-2"></i>Управление
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Предпросмотр -->
+                <div class="mb-4">
+                    <h6 class="mb-3">Предпросмотр контента</h6>
+                    <button type="button" class="btn btn-outline-info w-100" onclick="previewContent()">
+                        <i class="fas fa-eye me-2"></i>Предпросмотр случайного поста
+                    </button>
+                </div>
+                
+                <hr>
+                
+                <!-- Очистка -->
+                <div class="mb-4">
+                    <h6 class="mb-3">Очистка ИИ контента</h6>
+                    <form method="POST" action="{{ url_for('ai_admin.cleanup_ai_content') }}" 
+                          onsubmit="return confirm('Вы уверены? Это действие нельзя отменить!')">
+                        <div class="mb-3">
+                            <select class="form-select" name="cleanup_type" required>
+                                <option value="">Выберите тип очистки</option>
+                                <option value="posts">Удалить все ИИ посты</option>
+                                <option value="comments">Удалить все ИИ комментарии</option>
+                                <option value="users">Удалить всех ИИ пользователей</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="fas fa-trash me-2"></i>Очистить
+                        </button>
+                    </form>
+                </div>
+                
+                <hr>
+                
+                <!-- Экспорт -->
+                <div>
+                    <h6 class="mb-3">Экспорт данных</h6>
+                    <button type="button" class="btn btn-outline-secondary w-100" onclick="exportContent()">
+                        <i class="fas fa-download me-2"></i>Экспорт ИИ контента
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Последние ИИ посты -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-newspaper me-2"></i>Последние ИИ посты
+                </h5>
+                <a href="{{ url_for('ai_admin.manage_ai_users') }}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-users me-2"></i>Управление ИИ пользователями
+                </a>
+            </div>
+            <div class="card-body">
+                {% if recent_posts %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Заголовок</th>
+                                <th>Категория</th>
+                                <th>Просмотры</th>
+                                <th>Комментарии</th>
+                                <th>Дата создания</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for post in recent_posts %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-robot text-primary me-2"></i>
+                                        <a href="{{ url_for('blog.post_detail', slug=post.slug) }}" 
+                                           class="text-decoration-none">{{ post.title[:50] }}{% if post.title|length > 50 %}...{% endif %}</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if post.category %}
+                                        <span class="badge" style="background-color: {{ post.category.color }}">
+                                            {{ post.category.name }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">Без категории</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <i class="fas fa-eye me-1"></i>{{ post.views_count }}
+                                </td>
+                                <td>
+                                    <i class="fas fa-comments me-1"></i>{{ post.get_comments_count() }}
+                                </td>
+                                <td>{{ post.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('blog.post_detail', slug=post.slug) }}" 
+                                           class="btn btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('blog.edit_post', slug=post.slug) }}" 
+                                           class="btn btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-robot fa-3x text-muted mb-3"></i>
+                        <h5>Пока нет ИИ постов</h5>
+                        <p class="text-muted">Создайте первый пост с помощью ИИ генератора</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно предпросмотра -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Предпросмотр ИИ контента</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Генерация...</span>
+                        </div>
+                        <p class="mt-2">Генерируем контент...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" onclick="createFromPreview()">Создать этот пост</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let previewData = null;
+
+function previewContent() {
+    const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+    modal.show();
+    
+    fetch('{{ url_for("ai_admin.preview_ai_content") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                previewData = data.data;
+                document.getElementById('previewContent').innerHTML = `
+                    <div class="mb-3">
+                        <h4>${data.data.title}</h4>
+                        <div class="d-flex gap-2 mb-2">
+                            <span class="badge bg-primary">${data.data.category}</span>
+                            <span class="badge bg-secondary">Качество: ${(data.data.quality_score * 100).toFixed(1)}%</span>
+                            <span class="badge bg-info">Время чтения: ${data.data.reading_time} мин</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Краткое описание:</h6>
+                        <p class="text-muted">${data.data.excerpt}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Теги:</h6>
+                        ${data.data.tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('')}
+                    </div>
+                    <div>
+                        <h6>Содержание:</h6>
+                        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; padding: 1rem; border-radius: 0.375rem;">
+                            <pre style="white-space: pre-wrap; font-family: inherit;">${data.data.content}</pre>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('previewContent').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Ошибка генерации: ${data.error}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            document.getElementById('previewContent').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Ошибка запроса: ${error.message}
+                </div>
+            `;
+        });
+}
+
+function createFromPreview() {
+    if (previewData) {
+        // Создаем форму и отправляем данные
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("ai_admin.generate_single_post") }}';
+        
+        const categoryInput = document.createElement('input');
+        categoryInput.type = 'hidden';
+        categoryInput.name = 'category';
+        categoryInput.value = previewData.category;
+        form.appendChild(categoryInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function exportContent() {
+    fetch('{{ url_for("ai_admin.export_ai_content") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const blob = new Blob([JSON.stringify(data.data, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ai_content_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert(`Экспортировано ${data.count} постов`);
+            } else {
+                alert('Ошибка экспорта: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Ошибка запроса: ' + error.message);
+        });
+}
+
+// Автообновление статистики каждые 30 секунд
+setInterval(() => {
+    location.reload();
+}, 30000);
+</script>
+{% endblock %}

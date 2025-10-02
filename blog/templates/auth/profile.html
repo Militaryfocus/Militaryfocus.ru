@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль - МойБлог{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="{{ user.get_avatar_url() }}" class="rounded-circle mb-3" 
+                     width="120" height="120" alt="Avatar">
+                <h4>{{ user.get_full_name() }}</h4>
+                <p class="text-muted">@{{ user.username }}</p>
+                {% if user.bio %}
+                <p class="small">{{ user.bio }}</p>
+                {% endif %}
+                <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i>Редактировать профиль
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Информация о профиле</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Email:</strong></div>
+                    <div class="col-sm-9">{{ user.email }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Дата регистрации:</strong></div>
+                    <div class="col-sm-9">{{ user.created_at.strftime('%d.%m.%Y') }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Последний визит:</strong></div>
+                    <div class="col-sm-9">{{ user.last_seen.strftime('%d.%m.%Y в %H:%M') if user.last_seen else 'Никогда' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Статус:</strong></div>
+                    <div class="col-sm-9">
+                        {% if user.is_admin %}
+                            <span class="badge bg-danger">Администратор</span>
+                        {% else %}
+                            <span class="badge bg-primary">Пользователь</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if user.posts.count() > 0 %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Мои посты ({{ user.posts.count() }})</h5>
+            </div>
+            <div class="card-body">
+                {% for post in user.posts.order_by(user.posts.c.created_at.desc()).limit(5) %}
+                <div class="d-flex justify-content-between align-items-start mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                    <div>
+                        <h6 class="mb-1">
+                            <a href="{{ url_for('blog.post_detail', slug=post.slug) }}" 
+                               class="text-decoration-none">{{ post.title }}</a>
+                        </h6>
+                        <small class="text-muted">
+                            {{ post.created_at.strftime('%d.%m.%Y') }} • 
+                            <i class="fas fa-eye me-1"></i>{{ post.views_count }} • 
+                            <i class="fas fa-comments me-1"></i>{{ post.get_comments_count() }}
+                        </small>
+                    </div>
+                    <div>
+                        {% if post.is_published %}
+                            <span class="badge bg-success">Опубликован</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Черновик</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

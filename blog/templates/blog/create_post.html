@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Создать пост - МойБлог{% endblock %}
+
+{% block head %}
+<!-- Markdown Editor -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="h4 mb-0">
+                    <i class="fas fa-plus me-2"></i>Создать новый пост
+                </h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            {{ form.title.label(class="form-label") }}
+                            {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else ""), placeholder="Введите заголовок поста") }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.title.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            {{ form.category.label(class="form-label") }}
+                            {{ form.category(class="form-select") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.excerpt.label(class="form-label") }}
+                        {{ form.excerpt(class="form-control") }}
+                        <div class="form-text">Краткое описание поста для превью</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.content.label(class="form-label") }}
+                        {{ form.content(class="form-control", id="markdown-editor") }}
+                        {% if form.content.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.content.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.tags.label(class="form-label") }}
+                        {{ form.tags(class="form-control") }}
+                        <div class="form-text">Введите теги через запятую</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form.is_published(class="form-check-input") }}
+                                {{ form.is_published.label(class="form-check-label") }}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form.is_featured(class="form-check-input") }}
+                                {{ form.is_featured.label(class="form-check-label") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Отмена
+                        </a>
+                        
+                        <div>
+                            <button type="submit" name="action" value="draft" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-save me-2"></i>Сохранить как черновик
+                            </button>
+                            <button type="submit" name="action" value="publish" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Опубликовать
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация Markdown редактора
+    const easyMDE = new EasyMDE({
+        element: document.getElementById('markdown-editor'),
+        placeholder: 'Напишите содержание поста используя Markdown...',
+        spellChecker: false,
+        autosave: {
+            enabled: true,
+            uniqueId: "post-content",
+            delay: 1000,
+        },
+        toolbar: [
+            "bold", "italic", "heading", "|",
+            "quote", "unordered-list", "ordered-list", "|",
+            "link", "image", "table", "|",
+            "preview", "side-by-side", "fullscreen", "|",
+            "guide"
+        ],
+        status: ["autosave", "lines", "words", "cursor"],
+        renderingConfig: {
+            singleLineBreaks: false,
+            codeSyntaxHighlighting: true,
+        },
+    });
+    
+    // Автогенерация slug из заголовка
+    const titleInput = document.getElementById('title');
+    titleInput.addEventListener('input', function() {
+        // Здесь можно добавить автогенерацию slug
+    });
+    
+    // Обработка отправки формы
+    const form = document.querySelector('form');
+    const publishBtn = document.querySelector('button[value="publish"]');
+    const draftBtn = document.querySelector('button[value="draft"]');
+    
+    publishBtn.addEventListener('click', function() {
+        document.getElementById('is_published').checked = true;
+    });
+    
+    draftBtn.addEventListener('click', function() {
+        document.getElementById('is_published').checked = false;
+    });
+});
+</script>
+{% endblock %}
