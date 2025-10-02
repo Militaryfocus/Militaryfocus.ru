@@ -59,6 +59,9 @@ def create_app(config_name=None):
     from blog.routes.admin import bp as admin_bp
     app.register_blueprint(admin_bp, url_prefix='/admin')
     
+    from blog.routes.ai_admin import bp as ai_admin_bp
+    app.register_blueprint(ai_admin_bp, url_prefix='/ai')
+    
     # Настройка Flask-Admin
     class SecureModelView(ModelView):
         def is_accessible(self):
