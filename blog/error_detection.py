@@ -19,7 +19,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.tag import pos_tag
 from nltk.chunk import ne_chunk
 from nltk.tree import Tree
-import pymorphy2
+import pymorphy3 as pymorphy2
 from textstat import flesch_reading_ease
 
 # Загружаем необходимые данные NLTK
