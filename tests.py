@@ -165,7 +165,7 @@ class AuthRoutesTest(BlogTestCase):
         """Тест страницы входа"""
         response = self.client.get('/auth/login')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Вход в систему', response.data)
+        self.assertIn('Вход в систему'.encode('utf-8'), response.data)
     
     def test_login_success(self):
         """Тест успешного входа"""
@@ -179,13 +179,13 @@ class AuthRoutesTest(BlogTestCase):
             'password': 'wrongpass'
         })
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Неверное имя пользователя или пароль', response.data)
+        self.assertIn('Неверное имя пользователя или пароль'.encode('utf-8'), response.data)
     
     def test_register_page(self):
         """Тест страницы регистрации"""
         response = self.client.get('/auth/register')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Регистрация', response.data)
+        self.assertIn('Регистрация'.encode('utf-8'), response.data)
     
     def test_logout(self):
         """Тест выхода из системы"""
@@ -200,7 +200,7 @@ class BlogRoutesTest(BlogTestCase):
         """Тест главной страницы"""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'МойБлог', response.data)
+        self.assertIn('МойБлог'.encode('utf-8'), response.data)
     
     def test_post_detail(self):
         """Тест страницы поста"""
@@ -218,7 +218,7 @@ class BlogRoutesTest(BlogTestCase):
         self.login()
         response = self.client.get('/blog/create')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Создать новый пост', response.data)
+        self.assertIn('Создать новый пост'.encode('utf-8'), response.data)
 
 class SecurityTest(BlogTestCase):
     """Тесты безопасности"""
