@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: http://localhost:5000/static/sitemap.xml
+
+# Запрещенные директории
+Disallow: /admin/
+Disallow: /ai/
+Disallow: /auth/login
+Disallow: /auth/register
+Disallow: /static/uploads/
+
+# Разрешенные для индексации
+Allow: /blog/
+Allow: /static/css/
+Allow: /static/js/
+Allow: /static/images/
+
+# Задержка между запросами (в секундах)
+Crawl-delay: 1

@@ -8,7 +8,7 @@ import os
 import tempfile
 from flask import Flask
 from blog import create_app, db
-from blog.models import User, Post, Category, Comment
+from blog.models_perfect import User, Post, Category, Comment
 
 class BlogTestCase(unittest.TestCase):
     """Базовый класс для тестов блога"""
@@ -60,6 +60,9 @@ class BlogTestCase(unittest.TestCase):
             color='#007bff'
         )
         db.session.add(self.test_category)
+        
+        # Сначала коммитим пользователя и категорию
+        db.session.commit()
         
         # Создаем тестовый пост
         self.test_post = Post(
