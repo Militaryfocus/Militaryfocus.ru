@@ -17,6 +17,9 @@ login_manager = LoginManager()
 migrate = Migrate()
 admin = Admin()
 
+# Rate limiting (будет инициализирован в create_app)
+limiter = None
+
 def create_app(config_name=None):
     """Фабрика приложений Flask"""
     app = Flask(__name__)
@@ -26,15 +29,36 @@ def create_app(config_name=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///blog.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER') or 'static/uploads'
-    app.config['MAX_CONTENT_LENGTH'] = int(os.environ.get('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))
+    app.config['MAX_CONTENT_LENGTH'] = int(os.environ.get('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))  # 16MB
     app.config['POSTS_PER_PAGE'] = int(os.environ.get('POSTS_PER_PAGE', 5))
     app.config['COMMENTS_PER_PAGE'] = int(os.environ.get('COMMENTS_PER_PAGE', 10))
+    
+    # Дополнительные настройки безопасности
+    app.config['MAX_FILE_SIZE'] = int(os.environ.get('MAX_FILE_SIZE', 5 * 1024 * 1024))  # 5MB для отдельных файлов
+    app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc', 'docx'}
     
     # Инициализация расширений
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
     admin.init_app(app)
+    
+    # Инициализация rate limiting
+    try:
+        from flask_limiter import Limiter
+        from flask_limiter.util import get_remote_address
+        
+        global limiter
+        limiter = Limiter(
+            app,
+            key_func=get_remote_address,
+            default_limits=["200 per day", "50 per hour"],
+            storage_uri="memory://"  # Для продакшена лучше использовать Redis
+        )
+        print("✅ Rate limiting инициализирован")
+    except ImportError:
+        print("⚠️ Flask-Limiter не установлен, rate limiting отключен")
+        limiter = None
     
     # Настройка Flask-Login
     login_manager.login_view = 'auth.login'
