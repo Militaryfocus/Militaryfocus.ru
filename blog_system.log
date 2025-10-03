@@ -527,3 +527,17 @@
 2025-10-03 15:47:30,901 - blog.ai_provider_manager - INFO - ✅ Локальные модели загружены
 2025-10-03 15:47:30,904 - blog.ai_provider_manager - INFO - ✅ Локальный провайдер инициализирован
 2025-10-03 15:47:30,906 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:50:06,727 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:50:06,727 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:50:06,888 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:50:07,014 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:50:07,049 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:50:07,155 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:50:07,716 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:50:15,759 - blog.advanced_content_generator - INFO - ✅ Локальные модели загружены
+2025-10-03 15:50:22,850 - blog.ai_provider_manager - INFO - ✅ Локальные модели загружены
+2025-10-03 15:50:22,850 - blog.ai_provider_manager - INFO - ✅ Локальный провайдер инициализирован
+2025-10-03 15:50:28,633 - blog.advanced_content_generator - INFO - ✅ Локальные модели загружены
+2025-10-03 15:50:35,392 - blog.ai_provider_manager - INFO - ✅ Локальные модели загружены
+2025-10-03 15:50:35,393 - blog.ai_provider_manager - INFO - ✅ Локальный провайдер инициализирован
+2025-10-03 15:50:35,394 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
