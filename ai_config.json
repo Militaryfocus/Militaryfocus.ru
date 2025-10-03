@@ -1,0 +1,60 @@
+{
+  "ai_providers": {
+    "openai": {
+      "enabled": false,
+      "api_key": "",
+      "model": "gpt-4",
+      "max_tokens": 2000,
+      "temperature": 0.7,
+      "timeout": 30
+    },
+    "anthropic": {
+      "enabled": false,
+      "api_key": "",
+      "model": "claude-3-sonnet-20240229",
+      "max_tokens": 2000,
+      "temperature": 0.7,
+      "timeout": 30
+    },
+    "google": {
+      "enabled": false,
+      "api_key": "",
+      "model": "gemini-pro",
+      "max_tokens": 2000,
+      "temperature": 0.7,
+      "timeout": 30
+    },
+    "local": {
+      "enabled": true,
+      "models": {
+        "text_generation": "microsoft/DialoGPT-medium",
+        "sentiment_analysis": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+        "summarization": "facebook/bart-large-cnn"
+      },
+      "device": "cpu",
+      "cache_enabled": true
+    }
+  },
+  "cache": {
+    "enabled": true,
+    "ttl": 3600,
+    "max_size": 1000,
+    "storage_path": "./cache"
+  },
+  "rate_limiting": {
+    "enabled": true,
+    "requests_per_minute": 60,
+    "requests_per_hour": 1000
+  },
+  "monitoring": {
+    "enabled": true,
+    "log_level": "INFO",
+    "metrics_enabled": true,
+    "alert_threshold": 0.8
+  },
+  "security": {
+    "encrypt_keys": true,
+    "key_rotation_days": 90,
+    "audit_logging": true
+  }
+}
