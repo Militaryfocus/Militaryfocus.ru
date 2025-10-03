@@ -2,15 +2,20 @@
 Маршруты аутентификации
 """
 
+import logging
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from blog.models import User
 from blog.forms import LoginForm, RegisterForm, ProfileForm
-from blog import db
+from blog import db, limiter
+
+# Настройка логирования безопасности
+security_logger = logging.getLogger('security')
 
 bp = Blueprint('auth', __name__)
 
 @bp.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute") if limiter else lambda f: f
 def login():
     """Вход в систему"""
     if current_user.is_authenticated:
@@ -24,13 +29,21 @@ def login():
             next_page = request.args.get('next')
             if not next_page or not next_page.startswith('/'):
                 next_page = url_for('main.index')
+            
+            # Логирование успешного входа
+            security_logger.info(f"Successful login: {user.username} from {request.remote_addr}")
+            
             flash(f'Добро пожаловать, {user.get_full_name()}!', 'success')
             return redirect(next_page)
+        
+        # Логирование неудачной попытки входа
+        security_logger.warning(f"Failed login attempt: {form.username.data} from {request.remote_addr}")
         flash('Неверное имя пользователя или пароль', 'error')
     
     return render_template('auth/login.html', form=form)
 
 @bp.route('/register', methods=['GET', 'POST'])
+@limiter.limit("3 per minute") if limiter else lambda f: f
 def register():
     """Регистрация"""
     if current_user.is_authenticated:
@@ -47,6 +60,10 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+        
+        # Логирование регистрации
+        security_logger.info(f"New user registered: {user.username} ({user.email}) from {request.remote_addr}")
+        
         flash('Регистрация прошла успешно! Теперь вы можете войти в систему.', 'success')
         return redirect(url_for('auth.login'))
     
@@ -56,7 +73,12 @@ def register():
 @login_required
 def logout():
     """Выход из системы"""
+    username = current_user.username
     logout_user()
+    
+    # Логирование выхода
+    security_logger.info(f"User logout: {username} from {request.remote_addr}")
+    
     flash('Вы успешно вышли из системы', 'info')
     return redirect(url_for('main.index'))
 
