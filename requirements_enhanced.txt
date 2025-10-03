@@ -1,0 +1,60 @@
+# Основные зависимости Flask
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-Migrate==4.0.5
+Flask-Login==0.6.3
+Flask-WTF==1.1.1
+WTForms==3.0.1
+Werkzeug==2.3.7
+
+# ИИ и машинное обучение
+openai==1.3.0
+anthropic==0.7.0
+google-generativeai==0.3.0
+transformers==4.35.0
+torch==2.1.0
+scikit-learn==1.3.2
+numpy==1.24.3
+pandas==2.1.3
+
+# Обработка текста и NLP
+nltk==3.8.1
+textstat==0.7.3
+spacy==3.7.2
+
+# HTTP запросы и API
+requests==2.31.0
+aiohttp==3.9.0
+httpx==0.25.2
+
+# Кэширование и очереди
+redis==5.0.1
+celery==5.3.4
+
+# Мониторинг и логирование
+prometheus-client==0.19.0
+structlog==23.2.0
+
+# База данных
+SQLAlchemy==2.0.23
+psycopg2-binary==2.9.9
+
+# Утилиты
+python-dotenv==1.0.0
+click==8.1.7
+tqdm==4.66.1
+backoff==2.2.1
+schedule==1.2.0
+
+# Разработка и тестирование
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.1
+
+# Дополнительные зависимости для новых модулей
+dataclasses-json==0.6.1
+pydantic==2.5.0
+asyncio-mqtt==0.16.1
+aioredis==2.0.1

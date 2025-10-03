@@ -207,3 +207,19 @@ post_tags = db.Table('post_tags',
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
 )
+
+class View(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    ip_address = db.Column(db.String(45), nullable=True)
+    user_agent = db.Column(db.Text, nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    session_id = db.Column(db.String(255), nullable=True)
+    
+    # Связи
+    post = db.relationship('Post', backref=db.backref('views', lazy=True))
+    user = db.relationship('User', backref=db.backref('views', lazy=True))
+    
+    def __repr__(self):
+        return f'<View {self.id}>'
