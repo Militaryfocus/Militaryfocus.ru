@@ -27,22 +27,30 @@ def create_app(config_name=None):
     """Фабрика приложений Flask"""
     app = Flask(__name__)
     
-    # Конфигурация
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///blog.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER') or 'static/uploads'
-    app.config['MAX_CONTENT_LENGTH'] = int(os.environ.get('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))
-    app.config['POSTS_PER_PAGE'] = int(os.environ.get('POSTS_PER_PAGE', 5))
-    app.config['COMMENTS_PER_PAGE'] = int(os.environ.get('COMMENTS_PER_PAGE', 10))
+    # Загружаем конфигурацию
+    if config_name:
+        from config import config
+        app.config.from_object(config[config_name])
+    else:
+        # Определяем конфигурацию по переменной окружения
+        config_name = os.environ.get('FLASK_ENV', 'development')
+        from config import config
+        app.config.from_object(config[config_name])
     
-    # Кэширование
-    app.config['CACHE_TYPE'] = os.environ.get('CACHE_TYPE', 'simple')
-    app.config['CACHE_REDIS_URL'] = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-    
-    # Безопасность
-    app.config['PERMANENT_SESSION_LIFETIME'] = int(os.environ.get('SESSION_LIFETIME', 86400))  # 24 часа
-    app.config['WTF_CSRF_TIME_LIMIT'] = int(os.environ.get('CSRF_TIMEOUT', 3600))  # 1 час
+    # Дополнительные настройки безопасности для продакшена
+    if config_name == 'production':
+        # Настройки безопасности для продакшена
+        app.config['SESSION_COOKIE_SECURE'] = True
+        app.config['SESSION_COOKIE_HTTPONLY'] = True
+        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+        app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 часа
+        
+        # Настройки для HTTPS
+        app.config['PREFERRED_URL_SCHEME'] = 'https'
+        
+        # Настройки для прокси
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
     
     # Инициализация расширений
     db.init_app(app)

@@ -168,6 +168,12 @@ class AutonomousContentManager:
     
     def create_ai_author(self) -> User:
         """Создание ИИ автора"""
+        import secrets
+        import string
+        
+        # Генерируем случайный пароль для безопасности
+        ai_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(24))
+        
         ai_author = User(
             username='ai_author',
             email='ai@blog.com',
@@ -176,9 +182,11 @@ class AutonomousContentManager:
             bio='Автоматически созданный ИИ автор для генерации контента',
             is_admin=False
         )
-        ai_author.set_password('ai_secure_password_123')
+        ai_author.set_password(ai_password)
         db.session.add(ai_author)
         db.session.commit()
+        
+        logger.info("✅ Создан ИИ автор с безопасным паролем")
         return ai_author
     
     def add_tags_to_post(self, post: Post, tag_names: List[str]):

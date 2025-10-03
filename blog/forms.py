@@ -92,12 +92,22 @@ class PostForm(FlaskForm):
         # Кэшируем категории для избежания N+1 запросов
         from flask import current_app
         cache_key = 'categories_choices'
-        choices = current_app.cache.get(cache_key) if hasattr(current_app, 'cache') else None
+        
+        try:
+            choices = current_app.cache.get(cache_key) if hasattr(current_app, 'cache') else None
+        except:
+            choices = None
         
         if choices is None:
-            choices = [(0, 'Без категории')] + [(c.id, c.name) for c in Category.query.all()]
-            if hasattr(current_app, 'cache'):
-                current_app.cache.set(cache_key, choices, timeout=300)  # 5 минут
+            # Используем более эффективный запрос
+            categories = Category.query.options(db.joinedload(Category.posts)).all()
+            choices = [(0, 'Без категории')] + [(c.id, c.name) for c in categories]
+            
+            try:
+                if hasattr(current_app, 'cache'):
+                    current_app.cache.set(cache_key, choices, timeout=300)  # 5 минут
+            except:
+                pass  # Если кэш недоступен, продолжаем без него
         
         self.category.choices = choices
 
