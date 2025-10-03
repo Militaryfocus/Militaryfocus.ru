@@ -8,7 +8,7 @@ import os
 import logging
 from dotenv import load_dotenv
 from blog import create_app, db
-from blog.models import User, Post, Category, Comment
+from blog.models_perfect import User, Post, Category, Comment
 
 # Настройка логирования
 logging.basicConfig(
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         
         # Инициализация системных компонентов
         try:
-            from blog.fault_tolerance import init_fault_tolerance
+            from blog.fault_tolerance_perfect import init_fault_tolerance
             from blog.monitoring import monitoring_system
             from blog.seo_optimizer import seo_optimizer
             
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         
         # Корректное завершение системных компонентов
         try:
-            from blog.fault_tolerance import shutdown_fault_tolerance
+            from blog.fault_tolerance_perfect import shutdown_fault_tolerance
             from blog.monitoring import monitoring_system
             
             shutdown_fault_tolerance()

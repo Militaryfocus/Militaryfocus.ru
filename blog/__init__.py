@@ -46,7 +46,7 @@ def create_app(config_name=None):
     admin.init_app(app)
     
     # Инициализация безопасных заголовков
-    from blog.security import init_security_headers
+    from blog.security_perfect import init_security_headers
     init_security_headers(app)
     
     # Настройка Flask-Login
@@ -56,7 +56,7 @@ def create_app(config_name=None):
     
     @login_manager.user_loader
     def load_user(user_id):
-        from blog.models import User
+        from blog.models_perfect import User
         return User.query.get(int(user_id))
     
     # Регистрация Blueprint'ов
@@ -98,7 +98,7 @@ def create_app(config_name=None):
     
     # Добавление моделей в админ-панель
     with app.app_context():
-        from blog.models import User, Post, Category, Comment
+        from blog.models_perfect import User, Post, Category, Comment
         admin.add_view(SecureModelView(User, db.session, name='Пользователи'))
         admin.add_view(SecureModelView(Post, db.session, name='Посты'))
         admin.add_view(SecureModelView(Category, db.session, name='Категории'))
@@ -107,7 +107,7 @@ def create_app(config_name=None):
     # Контекстные процессоры
     @app.context_processor
     def inject_categories():
-        from blog.models import Category
+        from blog.models_perfect import Category
         categories = Category.query.all()
         return dict(categories=categories)
     
@@ -124,7 +124,7 @@ def create_app(config_name=None):
             # Определение типа страницы
             if request.endpoint == 'blog.post_detail':
                 # Для страниц постов
-                from blog.models import Post
+                from blog.models_perfect import Post
                 slug = request.view_args.get('slug')
                 if slug:
                     post = Post.query.filter_by(slug=slug, is_published=True).first()
@@ -133,7 +133,7 @@ def create_app(config_name=None):
             
             elif request.endpoint == 'blog.category_posts':
                 # Для страниц категорий
-                from blog.models import Category
+                from blog.models_perfect import Category
                 slug = request.view_args.get('slug')
                 if slug:
                     category = Category.query.filter_by(slug=slug).first()

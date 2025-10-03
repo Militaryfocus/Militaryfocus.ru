@@ -8,7 +8,7 @@ import os
 import tempfile
 from flask import Flask
 from blog import create_app, db
-from blog.models import User, Post, Category, Comment
+from blog.models_perfect import User, Post, Category, Comment
 
 class BlogTestCase(unittest.TestCase):
     """Базовый класс для тестов блога"""
