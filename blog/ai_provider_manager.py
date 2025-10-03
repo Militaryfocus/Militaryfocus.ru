@@ -17,6 +17,7 @@ import hashlib
 import pickle
 from functools import wraps
 import backoff
+from collections import defaultdict
 
 import openai
 import anthropic

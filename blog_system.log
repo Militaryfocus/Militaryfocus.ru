@@ -8,3 +8,62 @@
 2025-10-03 15:30:04,951 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
 2025-10-03 15:30:05,078 - pymorphy2.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy2_dicts_ru/data
 2025-10-03 15:30:05,860 - pymorphy2.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417127, updated: 2020-10-11T15:05:51.070345
+2025-10-03 15:30:52,456 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:30:52,456 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:30:52,608 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:30:53,292 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:30:53,327 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:30:53,420 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:31:23,246 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:31:23,247 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:31:24,220 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:31:24,326 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:31:24,358 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:31:24,417 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:31:24,825 - matplotlib.font_manager - INFO - Failed to extract font properties from /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf: Can not load face (unknown file format; error code 0x2)
+2025-10-03 15:31:24,849 - matplotlib.font_manager - INFO - generated new fontManager
+2025-10-03 15:31:59,542 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:31:59,542 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:31:59,625 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:31:59,736 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:31:59,757 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:31:59,805 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:32:00,388 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:32:28,030 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:32:28,035 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:32:28,161 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:32:28,206 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:32:28,221 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:32:28,268 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:32:28,756 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:32:55,379 - blog.advanced_content_generator - INFO - ✅ Локальные модели загружены
+2025-10-03 15:33:26,917 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:33:26,921 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:33:27,057 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:33:27,128 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:33:27,145 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:33:27,192 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:33:27,684 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:33:36,097 - blog.advanced_content_generator - INFO - ✅ Локальные модели загружены
+2025-10-03 15:33:59,965 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:33:59,965 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:34:00,040 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:34:00,095 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:34:00,117 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:34:00,183 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:34:00,792 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:34:07,681 - blog.advanced_content_generator - INFO - ✅ Локальные модели загружены
+2025-10-03 15:34:36,222 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:34:36,223 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:34:36,312 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:34:36,385 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:34:36,427 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
+2025-10-03 15:34:36,517 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
+2025-10-03 15:34:37,332 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 15:34:45,108 - blog.advanced_content_generator - INFO - ✅ Локальные модели загружены
+2025-10-03 15:35:10,971 - blog.ai_provider_manager - INFO - ✅ Локальные модели загружены
+2025-10-03 15:35:10,971 - blog.ai_provider_manager - INFO - ✅ Локальный провайдер инициализирован
+2025-10-03 15:35:18,522 - blog.advanced_content_generator - INFO - ✅ Локальные модели загружены
+2025-10-03 15:35:25,772 - blog.ai_provider_manager - INFO - ✅ Локальные модели загружены
+2025-10-03 15:35:25,772 - blog.ai_provider_manager - INFO - ✅ Локальный провайдер инициализирован
+2025-10-03 15:35:25,774 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
