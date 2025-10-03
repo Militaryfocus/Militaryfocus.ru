@@ -3,6 +3,7 @@
 """
 
 import os
+import secrets
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -10,19 +11,24 @@ from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
+from flask_caching import Cache
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Инициализация расширений
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
 admin = Admin()
+cache = Cache()
+limiter = Limiter(key_func=get_remote_address)
 
 def create_app(config_name=None):
     """Фабрика приложений Flask"""
     app = Flask(__name__)
     
     # Конфигурация
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'dev-secret-key'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///blog.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER') or 'static/uploads'
@@ -30,11 +36,21 @@ def create_app(config_name=None):
     app.config['POSTS_PER_PAGE'] = int(os.environ.get('POSTS_PER_PAGE', 5))
     app.config['COMMENTS_PER_PAGE'] = int(os.environ.get('COMMENTS_PER_PAGE', 10))
     
+    # Кэширование
+    app.config['CACHE_TYPE'] = os.environ.get('CACHE_TYPE', 'simple')
+    app.config['CACHE_REDIS_URL'] = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    
+    # Безопасность
+    app.config['PERMANENT_SESSION_LIFETIME'] = int(os.environ.get('SESSION_LIFETIME', 86400))  # 24 часа
+    app.config['WTF_CSRF_TIME_LIMIT'] = int(os.environ.get('CSRF_TIMEOUT', 3600))  # 1 час
+    
     # Инициализация расширений
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
     admin.init_app(app)
+    cache.init_app(app)
+    limiter.init_app(app)
     
     # Настройка Flask-Login
     login_manager.login_view = 'auth.login'
