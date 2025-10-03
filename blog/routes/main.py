@@ -3,7 +3,8 @@
 """
 
 from flask import Blueprint, render_template, request, current_app
-from blog.models import Post, Category, Comment
+from flask_login import login_required
+from blog.models import Post, Category, Comment, User
 from blog import db
 
 bp = Blueprint('main', __name__)

@@ -61,6 +61,9 @@ class BlogTestCase(unittest.TestCase):
         )
         db.session.add(self.test_category)
         
+        # Сначала коммитим пользователя и категорию
+        db.session.commit()
+        
         # Создаем тестовый пост
         self.test_post = Post(
             title='Тестовый пост',

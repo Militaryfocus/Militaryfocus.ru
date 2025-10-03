@@ -627,3 +627,4 @@
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
 2025-10-03 18:28:18,502 - __main__ - ERROR - ❌ Ошибка запуска сервера: (sqlite3.OperationalError) unable to open database file
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-10-03 19:02:31,083 - blog.fault_tolerance - ERROR - Database health check failed: Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')

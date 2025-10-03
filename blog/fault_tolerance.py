@@ -318,7 +318,8 @@ class FaultTolerantSystem:
         def check_database():
             """Проверка доступности базы данных"""
             try:
-                db.session.execute('SELECT 1')
+                from sqlalchemy import text
+                db.session.execute(text('SELECT 1'))
                 return {'connection': 'ok', 'query_time': 'fast'}
             except Exception as e:
                 logger.error(f"Database health check failed: {e}")
