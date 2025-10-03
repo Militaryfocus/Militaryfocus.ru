@@ -57,7 +57,7 @@ def create_app(config_name=None):
     app.register_blueprint(blog_bp, url_prefix='/blog')
     
     from blog.routes.admin import bp as admin_bp
-    app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(admin_bp, url_prefix='/admin', name='blog_admin')
     
     from blog.routes.ai_admin import bp as ai_admin_bp
     app.register_blueprint(ai_admin_bp, url_prefix='/ai')
