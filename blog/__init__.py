@@ -78,7 +78,7 @@ def create_app(config_name=None):
     # Добавление моделей в админ-панель
     with app.app_context():
         from blog.models import User, Post, Category, Comment
-        admin.add_view(SecureModelView(User, db.session, name='Пользователи'))
+        admin.add_view(SecureModelView(User, db.session, name='Пользователи', endpoint='admin_users'))
         admin.add_view(SecureModelView(Post, db.session, name='Посты'))
         admin.add_view(SecureModelView(Category, db.session, name='Категории'))
         admin.add_view(SecureModelView(Comment, db.session, name='Комментарии'))
