@@ -78,6 +78,10 @@ def create_app(config_name=None):
     from blog.routes.system_admin import bp as system_admin_bp
     app.register_blueprint(system_admin_bp, url_prefix='/system')
     
+    # Регистрация SEO маршрутов
+    from blog.routes.seo import bp as seo_bp
+    app.register_blueprint(seo_bp)
+    
     # Регистрация API
     from blog.routes.api import api_bp
     app.register_blueprint(api_bp)
@@ -106,5 +110,48 @@ def create_app(config_name=None):
         from blog.models import Category
         categories = Category.query.all()
         return dict(categories=categories)
+    
+    @app.context_processor
+    def inject_seo_meta():
+        """Автоматическое добавление SEO мета-тегов"""
+        from blog.advanced_seo import advanced_seo_optimizer
+        from flask import request
+        
+        # Получение мета-тегов для текущей страницы
+        meta_tags = {}
+        
+        try:
+            # Определение типа страницы
+            if request.endpoint == 'blog.post_detail':
+                # Для страниц постов
+                from blog.models import Post
+                slug = request.view_args.get('slug')
+                if slug:
+                    post = Post.query.filter_by(slug=slug, is_published=True).first()
+                    if post:
+                        meta_tags = advanced_seo_optimizer.meta_generator.generate_post_meta(post)
+            
+            elif request.endpoint == 'blog.category_posts':
+                # Для страниц категорий
+                from blog.models import Category
+                slug = request.view_args.get('slug')
+                if slug:
+                    category = Category.query.filter_by(slug=slug).first()
+                    if category:
+                        meta_tags = advanced_seo_optimizer.meta_generator.generate_category_meta(category)
+            
+            elif request.endpoint == 'main.index':
+                # Для главной страницы
+                meta_tags = advanced_seo_optimizer.meta_generator.generate_home_meta()
+            
+        except Exception as e:
+            # В случае ошибки возвращаем базовые мета-теги
+            meta_tags = {
+                'title': 'МойБлог - Современный блог с ИИ контентом',
+                'description': 'Современный блог на Python Flask с автоматическим наполнением контентом',
+                'keywords': 'блог, python, flask, искусственный интеллект'
+            }
+        
+        return dict(seo_meta=meta_tags)
     
     return app
