@@ -78,6 +78,10 @@ def create_app(config_name=None):
     from blog.routes.system_admin import bp as system_admin_bp
     app.register_blueprint(system_admin_bp, url_prefix='/system')
     
+    # Регистрация API
+    from blog.routes.api import api_bp
+    app.register_blueprint(api_bp)
+    
     # Настройка Flask-Admin
     class SecureModelView(ModelView):
         def is_accessible(self):

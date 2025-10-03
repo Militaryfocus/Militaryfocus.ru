@@ -176,7 +176,35 @@
 
     <!-- Sidebar -->
     <div class="col-lg-4">
-        <div class="sticky-top" style="top: 100px;">
+        <div class="sticky-top sidebar-container" style="top: 100px;">
+            <!-- Quick Navigation -->
+            <div class="card mb-4 quick-nav-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-compass text-primary me-2"></i>Быстрая навигация
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="quick-nav-grid">
+                        <a href="{{ url_for('main.popular') }}" class="quick-nav-item">
+                            <i class="fas fa-fire text-danger"></i>
+                            <span>Популярное</span>
+                        </a>
+                        <a href="{{ url_for('main.recent') }}" class="quick-nav-item">
+                            <i class="fas fa-clock text-info"></i>
+                            <span>Свежее</span>
+                        </a>
+                        <a href="{{ url_for('main.tags') }}" class="quick-nav-item">
+                            <i class="fas fa-tags text-success"></i>
+                            <span>Теги</span>
+                        </a>
+                        <a href="{{ url_for('main.authors') }}" class="quick-nav-item">
+                            <i class="fas fa-users text-warning"></i>
+                            <span>Авторы</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <!-- Popular Posts -->
             {% if popular_posts %}
             <div class="card mb-4">

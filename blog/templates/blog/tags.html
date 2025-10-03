@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">{{ title }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex align-items-center mb-4">
+                <div class="me-3">
+                    <i class="fas fa-tags fa-2x text-success"></i>
+                </div>
+                <div>
+                    <h1 class="h2 mb-0">{{ title }}</h1>
+                    <p class="text-muted mb-0">Популярные теги для быстрого поиска контента</p>
+                </div>
+            </div>
+
+            <!-- Tags Cloud -->
+            {% if tags %}
+                <div class="tags-cloud">
+                    {% for tag in tags %}
+                    <a href="{{ url_for('main.search', q=tag.name) }}" 
+                       class="tag-item" 
+                       style="background-color: {{ tag.color }}20; color: {{ tag.color }}; border-color: {{ tag.color }}30;"
+                       data-count="{{ tag.count }}">
+                        <i class="fas fa-tag me-1"></i>
+                        {{ tag.name }}
+                        <span class="tag-count">{{ tag.count }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Tag Categories -->
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-code text-primary me-2"></i>Программирование
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="tag-category">
+                                    {% for tag in tags[:5] %}
+                                    <a href="{{ url_for('main.search', q=tag.name) }}" class="tag-link">
+                                        {{ tag.name }} ({{ tag.count }})
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-brain text-info me-2"></i>ИИ и ML
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="tag-category">
+                                    {% for tag in tags[5:] %}
+                                    <a href="{{ url_for('main.search', q=tag.name) }}" class="tag-link">
+                                        {{ tag.name }} ({{ tag.count }})
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">Тегов пока нет</h3>
+                    <p class="text-muted">Теги появятся после создания постов</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top sidebar-container" style="top: 100px;">
+                <!-- Search Tags -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-search text-primary me-2"></i>Поиск по тегам
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET" action="{{ url_for('main.search') }}">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="q" placeholder="Введите тег...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Popular Tags -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-fire text-danger me-2"></i>Топ теги
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="popular-tags">
+                            {% for tag in tags[:10] %}
+                            <div class="popular-tag-item">
+                                <a href="{{ url_for('main.search', q=tag.name) }}" class="tag-link-small">
+                                    {{ tag.name }}
+                                </a>
+                                <span class="tag-count-small">{{ tag.count }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Navigation -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-compass text-warning me-2"></i>Навигация
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('main.popular') }}" class="btn btn-outline-danger">
+                                <i class="fas fa-fire me-2"></i>Популярное
+                            </a>
+                            <a href="{{ url_for('main.recent') }}" class="btn btn-outline-info">
+                                <i class="fas fa-clock me-2"></i>Свежее
+                            </a>
+                            <a href="{{ url_for('main.authors') }}" class="btn btn-outline-success">
+                                <i class="fas fa-users me-2"></i>Авторы
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tag-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.tag-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.tag-item:hover::before {
+    left: 100%;
+}
+
+.tag-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.tag-count {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.tag-category {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tag-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 0.25rem 0;
+    transition: color 0.3s ease;
+}
+
+.tag-link:hover {
+    color: var(--dark-color);
+    text-decoration: underline;
+}
+
+.popular-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.popular-tag-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.popular-tag-item:hover {
+    background: #e9ecef;
+}
+
+.tag-link-small {
+    color: var(--dark-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.tag-link-small:hover {
+    color: var(--primary-color);
+}
+
+.tag-count-small {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tags-cloud {
+        justify-content: center;
+    }
+    
+    .tag-item {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+</style>
+{% endblock %}
