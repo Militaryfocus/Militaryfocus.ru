@@ -5,9 +5,21 @@
 """
 
 import os
+import logging
 from dotenv import load_dotenv
 from blog import create_app, db
 from blog.models import User, Post, Category, Comment
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('blog_system.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Загружаем переменные окружения
 load_dotenv()
@@ -42,7 +54,7 @@ if __name__ == '__main__':
             admin.set_password('admin123')
             db.session.add(admin)
             db.session.commit()
-            print("Создан администратор: admin / admin123")
+            logger.info("Создан администратор: admin / admin123")
         
         # Инициализация системных компонентов
         try:
@@ -52,18 +64,18 @@ if __name__ == '__main__':
             
             # Запуск системы отказоустойчивости
             init_fault_tolerance()
-            print("✅ Система отказоустойчивости запущена")
+            logger.info("✅ Система отказоустойчивости запущена")
             
             # Запуск мониторинга
             monitoring_system.start()
-            print("✅ Система мониторинга запущена")
+            logger.info("✅ Система мониторинга запущена")
             
             # Обновление SEO файлов
             seo_optimizer.update_all_seo()
-            print("✅ SEO файлы обновлены")
+            logger.info("✅ SEO файлы обновлены")
             
         except Exception as e:
-            print(f"⚠️ Ошибка инициализации системных компонентов: {e}")
+            logger.error(f"⚠️ Ошибка инициализации системных компонентов: {e}")
     
     # Запускаем приложение
     try:
@@ -73,7 +85,7 @@ if __name__ == '__main__':
             debug=os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
         )
     except KeyboardInterrupt:
-        print("\n🛑 Завершение работы приложения...")
+        logger.info("🛑 Завершение работы приложения...")
         
         # Корректное завершение системных компонентов
         try:
@@ -82,9 +94,9 @@ if __name__ == '__main__':
             
             shutdown_fault_tolerance()
             monitoring_system.stop()
-            print("✅ Системные компоненты корректно завершены")
+            logger.info("✅ Системные компоненты корректно завершены")
             
         except Exception as e:
-            print(f"⚠️ Ошибка завершения: {e}")
+            logger.error(f"⚠️ Ошибка завершения: {e}")
     except Exception as e:
-        print(f"❌ Критическая ошибка приложения: {e}")
+        logger.error(f"❌ Критическая ошибка приложения: {e}")

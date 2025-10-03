@@ -22,7 +22,10 @@ def create_app(config_name=None):
     app = Flask(__name__)
     
     # Конфигурация
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'dev-secret-key'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    if not app.config['SECRET_KEY']:
+        raise ValueError("SECRET_KEY environment variable is required")
+    
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///blog.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER') or 'static/uploads'
@@ -30,11 +33,21 @@ def create_app(config_name=None):
     app.config['POSTS_PER_PAGE'] = int(os.environ.get('POSTS_PER_PAGE', 5))
     app.config['COMMENTS_PER_PAGE'] = int(os.environ.get('COMMENTS_PER_PAGE', 10))
     
+    # Настройки безопасности
+    app.config['CSRF_ENABLED'] = os.environ.get('CSRF_ENABLED', 'True').lower() == 'true'
+    app.config['SESSION_COOKIE_SECURE'] = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
+    app.config['SESSION_COOKIE_HTTPONLY'] = os.environ.get('SESSION_COOKIE_HTTPONLY', 'True').lower() == 'true'
+    app.config['SESSION_COOKIE_SAMESITE'] = os.environ.get('SESSION_COOKIE_SAMESITE', 'Lax')
+    
     # Инициализация расширений
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
     admin.init_app(app)
+    
+    # Инициализация безопасных заголовков
+    from blog.security import init_security_headers
+    init_security_headers(app)
     
     # Настройка Flask-Login
     login_manager.login_view = 'auth.login'
