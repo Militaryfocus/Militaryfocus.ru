@@ -480,6 +480,30 @@ class SEOOptimizer:
         self.schema_generator = StructuredDataGenerator(base_url)
         self.sitemap_generator = SitemapGenerator(base_url)
     
+    def generate_meta_tags(self, title: str, description: str, keywords: List[str], 
+                          url: str = "", image: str = "", author: str = "") -> Dict[str, str]:
+        """Генерация мета-тегов для страницы"""
+        meta_tags = {
+            'title': title[:60] if len(title) > 60 else title,
+            'description': description[:160] if len(description) > 160 else description,
+            'keywords': ', '.join(keywords[:10]) if keywords else '',
+            'og:title': title,
+            'og:description': description,
+            'og:type': 'article',
+            'og:url': url,
+            'og:image': image,
+            'twitter:card': 'summary_large_image',
+            'twitter:title': title,
+            'twitter:description': description,
+            'twitter:image': image
+        }
+        
+        if author:
+            meta_tags['author'] = author
+            meta_tags['og:author'] = author
+        
+        return meta_tags
+
     def optimize_post(self, post: Post) -> Dict:
         """Полная SEO оптимизация поста"""
         # Анализ SEO проблем

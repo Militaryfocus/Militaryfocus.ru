@@ -623,3 +623,7 @@
 2025-10-03 15:57:03,847 - pymorphy3.opencorpora_dict.wrapper - INFO - Loading dictionaries from /home/ubuntu/.local/lib/python3.13/site-packages/pymorphy3_dicts_ru/data
 2025-10-03 15:57:03,913 - pymorphy3.opencorpora_dict.wrapper - INFO - format: 2.4, revision: 417150, updated: 2022-01-08T22:09:24.565962
 2025-10-03 15:57:04,500 - blog.enhanced_ai_content - WARNING - ⚠️ OpenAI API ключ не найден
+2025-10-03 18:28:18,502 - __main__ - ERROR - ❌ Ошибка создания приложения: (sqlite3.OperationalError) unable to open database file
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-10-03 18:28:18,502 - __main__ - ERROR - ❌ Ошибка запуска сервера: (sqlite3.OperationalError) unable to open database file
+(Background on this error at: https://sqlalche.me/e/20/e3q8)

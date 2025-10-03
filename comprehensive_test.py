@@ -91,6 +91,11 @@ def test_basic_functionality():
             assert post.get_reading_time() > 0
             print("✅ Методы моделей работают")
             
+            # Тест аватара пользователя
+            avatar_url = user.get_avatar_url()
+            assert avatar_url is not None
+            print("✅ Аватар пользователя работает")
+            
             return True
             
     except Exception as e:
@@ -113,6 +118,14 @@ def test_ai_system():
         # Тест генератора контента
         generator = AIContentGenerator()
         print("✅ Генератор контента инициализирован")
+        
+        # Тест базовой функциональности ИИ
+        try:
+            # Проверяем доступность OpenAI (без реального запроса)
+            if hasattr(generator, 'openai_client'):
+                print("✅ OpenAI клиент доступен")
+        except Exception:
+            print("⚠️ OpenAI клиент требует настройки API ключа")
         
         return True
         
@@ -195,7 +208,18 @@ def test_seo():
         
         assert 'title' in meta_tags
         assert 'description' in meta_tags
+        assert 'og:title' in meta_tags
+        assert 'twitter:card' in meta_tags
         print("✅ SEO оптимизатор работает")
+        
+        # Тест анализатора SEO
+        from blog.seo_optimizer import SEOAnalyzer
+        analyzer = SEOAnalyzer()
+        
+        # Тест извлечения ключевых слов
+        keywords = analyzer.extract_keywords("Это тестовый текст для анализа ключевых слов")
+        assert len(keywords) > 0
+        print("✅ Анализатор SEO работает")
         
         return True
         

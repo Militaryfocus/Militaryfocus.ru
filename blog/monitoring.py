@@ -17,6 +17,52 @@ from functools import wraps
 from blog.models import Post, User, Comment
 from blog import db
 
+class SystemMonitor:
+    """Монитор системных ресурсов"""
+    
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+    
+    def get_cpu_usage(self) -> float:
+        """Получение использования CPU"""
+        try:
+            return psutil.cpu_percent(interval=1)
+        except Exception as e:
+            self.logger.error(f"Ошибка получения CPU: {e}")
+            return 0.0
+    
+    def get_memory_usage(self) -> float:
+        """Получение использования памяти"""
+        try:
+            memory = psutil.virtual_memory()
+            return memory.percent
+        except Exception as e:
+            self.logger.error(f"Ошибка получения памяти: {e}")
+            return 0.0
+    
+    def get_disk_usage(self) -> float:
+        """Получение использования диска"""
+        try:
+            disk = psutil.disk_usage('/')
+            return (disk.used / disk.total) * 100
+        except Exception as e:
+            self.logger.error(f"Ошибка получения диска: {e}")
+            return 0.0
+    
+    def get_system_info(self) -> Dict[str, Any]:
+        """Получение информации о системе"""
+        try:
+            return {
+                'cpu_count': psutil.cpu_count(),
+                'memory_total': psutil.virtual_memory().total,
+                'disk_total': psutil.disk_usage('/').total,
+                'boot_time': psutil.boot_time(),
+                'platform': psutil.platform()
+            }
+        except Exception as e:
+            self.logger.error(f"Ошибка получения системной информации: {e}")
+            return {}
+
 class MetricsCollector:
     """Сборщик метрик системы"""
     

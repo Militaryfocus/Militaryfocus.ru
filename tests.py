@@ -18,11 +18,14 @@ class BlogTestCase(unittest.TestCase):
         # Создаем временную базу данных
         self.db_fd, self.db_path = tempfile.mkstemp()
         
-        # Настраиваем тестовое приложение
+        # Настраиваем тестовое окружение
         os.environ['SECRET_KEY'] = 'test-secret-key'
         os.environ['DATABASE_URL'] = f'sqlite:///{self.db_path}'
         os.environ['FLASK_DEBUG'] = 'False'
+        os.environ['CSRF_ENABLED'] = 'False'  # Отключаем CSRF для тестов
         
+        # Создаем приложение с отключенной админкой для тестов
+        from blog import create_app
         self.app = create_app()
         self.app.config['TESTING'] = True
         self.app.config['WTF_CSRF_ENABLED'] = False
