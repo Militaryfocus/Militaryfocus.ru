@@ -260,8 +260,8 @@ def setup_ai():
         }
         
         config_file = os.path.join(PROJECT_ROOT, 'ai_config.json')
-        with open(config_file, 'w') as f:
-            json.dump(config, f, indent=2)
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=2, ensure_ascii=False)
         
         logger.add_log('📝 Конфигурация ИИ сохранена', 'success')
         
@@ -380,8 +380,8 @@ def finalize_setup():
         }
         
         config_file = os.path.join(PROJECT_ROOT, 'installation_config.json')
-        with open(config_file, 'w') as f:
-            json.dump(config, f, indent=2)
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=2, ensure_ascii=False)
         
         logger.add_log('📝 Конфигурация сохранена', 'success')
         
