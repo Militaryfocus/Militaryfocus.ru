@@ -3,23 +3,37 @@
 """
 
 from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect
 from wtforms import StringField, TextAreaField, PasswordField, BooleanField, SelectField, HiddenField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
 from blog.models import User, Category
+import re
 
 class LoginForm(FlaskForm):
     """Форма входа"""
-    username = StringField('Имя пользователя', validators=[DataRequired(), Length(min=3, max=80)])
+    username = StringField('Имя пользователя', validators=[
+        DataRequired(), 
+        Length(min=3, max=80),
+        Regexp(r'^[a-zA-Z0-9_]+$', message='Имя пользователя может содержать только буквы, цифры и подчеркивания')
+    ])
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
 
 class RegisterForm(FlaskForm):
     """Форма регистрации"""
-    username = StringField('Имя пользователя', validators=[DataRequired(), Length(min=3, max=80)])
+    username = StringField('Имя пользователя', validators=[
+        DataRequired(), 
+        Length(min=3, max=80),
+        Regexp(r'^[a-zA-Z0-9_]+$', message='Имя пользователя может содержать только буквы, цифры и подчеркивания')
+    ])
     email = StringField('Email', validators=[DataRequired(), Email()])
     first_name = StringField('Имя', validators=[Length(max=50)])
     last_name = StringField('Фамилия', validators=[Length(max=50)])
-    password = PasswordField('Пароль', validators=[DataRequired(), Length(min=6)])
+    password = PasswordField('Пароль', validators=[
+        DataRequired(), 
+        Length(min=8, max=128),
+        Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)', message='Пароль должен содержать минимум одну строчную букву, одну заглавную букву и одну цифру')
+    ])
     password2 = PasswordField('Повторите пароль', 
                              validators=[DataRequired(), EqualTo('password', message='Пароли должны совпадать')])
     
@@ -52,19 +66,50 @@ class ProfileForm(FlaskForm):
 
 class PostForm(FlaskForm):
     """Форма создания/редактирования поста"""
-    title = StringField('Заголовок', validators=[DataRequired(), Length(max=200)])
-    content = TextAreaField('Содержание', validators=[DataRequired()], 
-                           render_kw={"rows": 15, "placeholder": "Используйте Markdown для форматирования"})
-    excerpt = TextAreaField('Краткое описание', validators=[Length(max=500)],
-                           render_kw={"rows": 3, "placeholder": "Краткое описание поста для превью"})
+    title = StringField('Заголовок', validators=[
+        DataRequired(), 
+        Length(min=5, max=200),
+        Regexp(r'^[^<>{}]+$', message='Заголовок содержит недопустимые символы')
+    ])
+    content = TextAreaField('Содержание', validators=[
+        DataRequired(), 
+        Length(min=50, max=50000),
+        Regexp(r'^[^<>{}]+$', message='Содержание содержит недопустимые символы')
+    ], render_kw={"rows": 15, "placeholder": "Используйте Markdown для форматирования"})
+    excerpt = TextAreaField('Краткое описание', validators=[
+        Length(max=500),
+        Regexp(r'^[^<>{}]*$', message='Описание содержит недопустимые символы')
+    ], render_kw={"rows": 3, "placeholder": "Краткое описание поста для превью"})
     category = SelectField('Категория', coerce=int)
-    tags = StringField('Теги', render_kw={"placeholder": "Введите теги через запятую"})
+    tags = StringField('Теги', validators=[
+        Regexp(r'^[a-zA-Zа-яА-Я0-9\s,]+$', message='Теги могут содержать только буквы, цифры, пробелы и запятые')
+    ], render_kw={"placeholder": "Введите теги через запятую"})
     is_published = BooleanField('Опубликовать')
     is_featured = BooleanField('Рекомендуемый пост')
     
     def __init__(self, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
-        self.category.choices = [(0, 'Без категории')] + [(c.id, c.name) for c in Category.query.all()]
+        # Кэшируем категории для избежания N+1 запросов
+        from flask import current_app
+        cache_key = 'categories_choices'
+        
+        try:
+            choices = current_app.cache.get(cache_key) if hasattr(current_app, 'cache') else None
+        except:
+            choices = None
+        
+        if choices is None:
+            # Используем более эффективный запрос
+            categories = Category.query.options(db.joinedload(Category.posts)).all()
+            choices = [(0, 'Без категории')] + [(c.id, c.name) for c in categories]
+            
+            try:
+                if hasattr(current_app, 'cache'):
+                    current_app.cache.set(cache_key, choices, timeout=300)  # 5 минут
+            except:
+                pass  # Если кэш недоступен, продолжаем без него
+        
+        self.category.choices = choices
 
 class CommentForm(FlaskForm):
     """Форма комментария"""

@@ -29,15 +29,21 @@ def create_demo_data():
         # Проверяем администратора
         admin = User.query.filter_by(username='admin').first()
         if not admin:
+            # Генерируем случайный пароль для безопасности
+            import secrets
+            import string
+            admin_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(16))
+            
             admin = User(
                 username='admin',
                 email='admin@blog.com',
                 is_admin=True
             )
-            admin.set_password('admin123')
+            admin.set_password(admin_password)
             db.session.add(admin)
             db.session.commit()
-            print("👤 Создан администратор: admin / admin123")
+            print(f"👤 Создан администратор: admin / {admin_password}")
+            print("⚠️  ВАЖНО: Сохраните этот пароль! Он больше не будет показан.")
         
         # Создаем категории
         categories_data = [

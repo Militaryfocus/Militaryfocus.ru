@@ -34,15 +34,21 @@ if __name__ == '__main__':
         # Создаем администратора по умолчанию, если его нет
         admin = User.query.filter_by(username='admin').first()
         if not admin:
+            # Генерируем случайный пароль для безопасности
+            import secrets
+            import string
+            admin_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(16))
+            
             admin = User(
                 username='admin',
                 email='admin@blog.com',
                 is_admin=True
             )
-            admin.set_password('admin123')
+            admin.set_password(admin_password)
             db.session.add(admin)
             db.session.commit()
-            print("Создан администратор: admin / admin123")
+            print(f"Создан администратор: admin / {admin_password}")
+            print("⚠️  ВАЖНО: Сохраните этот пароль! Он больше не будет показан.")
         
         # Инициализация системных компонентов
         try:
@@ -70,7 +76,7 @@ if __name__ == '__main__':
         app.run(
             host=os.environ.get('FLASK_HOST', '0.0.0.0'),
             port=int(os.environ.get('FLASK_PORT', 5000)),
-            debug=os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+            debug=os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
         )
     except KeyboardInterrupt:
         print("\n🛑 Завершение работы приложения...")

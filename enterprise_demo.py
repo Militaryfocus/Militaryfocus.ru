@@ -33,6 +33,11 @@ def create_enterprise_blog():
         # Создаем администратора
         admin = User.query.filter_by(username='admin').first()
         if not admin:
+            # Генерируем случайный пароль для безопасности
+            import secrets
+            import string
+            admin_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(16))
+            
             admin = User(
                 username='admin',
                 email='admin@enterprise-blog.com',
@@ -41,10 +46,11 @@ def create_enterprise_blog():
                 bio='Администратор корпоративного блога с ИИ системами',
                 is_admin=True
             )
-            admin.set_password('admin123')
+            admin.set_password(admin_password)
             db.session.add(admin)
             db.session.commit()
-            print("👤 Создан администратор: admin / admin123")
+            print(f"👤 Создан администратор: admin / {admin_password}")
+            print("⚠️  ВАЖНО: Сохраните этот пароль! Он больше не будет показан.")
         
         # Создаем расширенный набор категорий
         categories_data = [

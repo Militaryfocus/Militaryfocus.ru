@@ -3,6 +3,7 @@
 """
 
 import os
+import secrets
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -10,31 +11,54 @@ from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
+from flask_caching import Cache
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Инициализация расширений
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
 admin = Admin()
+cache = Cache()
+limiter = Limiter(key_func=get_remote_address)
 
 def create_app(config_name=None):
     """Фабрика приложений Flask"""
     app = Flask(__name__)
     
-    # Конфигурация
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'dev-secret-key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///blog.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER') or 'static/uploads'
-    app.config['MAX_CONTENT_LENGTH'] = int(os.environ.get('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))
-    app.config['POSTS_PER_PAGE'] = int(os.environ.get('POSTS_PER_PAGE', 5))
-    app.config['COMMENTS_PER_PAGE'] = int(os.environ.get('COMMENTS_PER_PAGE', 10))
+    # Загружаем конфигурацию
+    if config_name:
+        from config import config
+        app.config.from_object(config[config_name])
+    else:
+        # Определяем конфигурацию по переменной окружения
+        config_name = os.environ.get('FLASK_ENV', 'development')
+        from config import config
+        app.config.from_object(config[config_name])
+    
+    # Дополнительные настройки безопасности для продакшена
+    if config_name == 'production':
+        # Настройки безопасности для продакшена
+        app.config['SESSION_COOKIE_SECURE'] = True
+        app.config['SESSION_COOKIE_HTTPONLY'] = True
+        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+        app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 часа
+        
+        # Настройки для HTTPS
+        app.config['PREFERRED_URL_SCHEME'] = 'https'
+        
+        # Настройки для прокси
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
     
     # Инициализация расширений
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
     admin.init_app(app)
+    cache.init_app(app)
+    limiter.init_app(app)
     
     # Настройка Flask-Login
     login_manager.login_view = 'auth.login'
@@ -64,6 +88,9 @@ def create_app(config_name=None):
     
     from blog.routes.system_admin import bp as system_admin_bp
     app.register_blueprint(system_admin_bp, url_prefix='/system')
+    
+    from blog.routes.autonomous_ai import bp as autonomous_ai_bp
+    app.register_blueprint(autonomous_ai_bp, url_prefix='/autonomous')
     
     # Настройка Flask-Admin
     class SecureModelView(ModelView):

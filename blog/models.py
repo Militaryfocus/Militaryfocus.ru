@@ -72,7 +72,19 @@ class Category(db.Model):
     
     def get_posts_count(self):
         """Количество постов в категории"""
-        return self.posts.filter_by(is_published=True).count()
+        # Используем кэшированный счетчик для производительности
+        from flask import current_app
+        cache_key = f'category_posts_count_{self.id}'
+        
+        try:
+            count = current_app.cache.get(cache_key) if hasattr(current_app, 'cache') else None
+            if count is None:
+                count = self.posts.filter_by(is_published=True).count()
+                if hasattr(current_app, 'cache'):
+                    current_app.cache.set(cache_key, count, timeout=300)
+            return count
+        except:
+            return self.posts.filter_by(is_published=True).count()
     
     def __repr__(self):
         return f'<Category {self.name}>'
@@ -139,7 +151,19 @@ class Post(db.Model):
     
     def get_comments_count(self):
         """Количество комментариев"""
-        return self.comments.filter_by(is_approved=True).count()
+        # Используем кэшированный счетчик для производительности
+        from flask import current_app
+        cache_key = f'post_comments_count_{self.id}'
+        
+        try:
+            count = current_app.cache.get(cache_key) if hasattr(current_app, 'cache') else None
+            if count is None:
+                count = self.comments.filter_by(is_approved=True).count()
+                if hasattr(current_app, 'cache'):
+                    current_app.cache.set(cache_key, count, timeout=300)
+            return count
+        except:
+            return self.comments.filter_by(is_approved=True).count()
     
     def get_reading_time(self):
         """Примерное время чтения (слов в минуту)"""
