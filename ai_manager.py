@@ -28,6 +28,11 @@ from blog.integrated_ai_system import (
     get_ai_system_status,
     optimize_ai_system
 )
+from blog.autonomous_ai import (
+    autonomous_manager,
+    start_autonomous_content_generation,
+    get_autonomous_stats
+)
 from blog.ai_monitoring import ai_monitoring_dashboard
 from blog.models import Post, User, Category, Comment
 
@@ -340,6 +345,86 @@ def ai_monitor(args):
     except Exception as e:
         print(f"❌ Ошибка генерации отчета: {e}")
 
+def autonomous_generate(args):
+    """Автономная генерация контента с созданием категорий и тегов"""
+    print("🤖 Запуск автономной генерации контента...")
+    print("📊 ИИ проанализирует тренды и создаст:")
+    print("   • Новые категории на основе популярных тем")
+    print("   • Релевантные теги для каждой категории")
+    print("   • Качественный контент по актуальным темам")
+    print("   • Автоматическое планирование публикаций")
+    
+    try:
+        results = start_autonomous_content_generation()
+        
+        print("\n" + "="*60)
+        print("🤖 РЕЗУЛЬТАТЫ АВТОНОМНОЙ ГЕНЕРАЦИИ")
+        print("="*60)
+        
+        print(f"📂 Создано категорий: {results.get('categories_created', 0)}")
+        print(f"🏷️ Создано тегов: {results.get('tags_created', 0)}")
+        print(f"📝 Создано постов: {results.get('posts_generated', 0)}")
+        print(f"📊 Проанализировано трендов: {results.get('trends_analyzed', 0)}")
+        
+        if results.get('errors'):
+            print(f"\n⚠️ Ошибки:")
+            for error in results['errors']:
+                print(f"   • {error}")
+        
+        print("="*60)
+        
+        # Показываем статистику автономной системы
+        stats = get_autonomous_stats()
+        print(f"\n📈 ОБЩАЯ СТАТИСТИКА АВТОНОМНОЙ СИСТЕМЫ:")
+        print(f"   Всего создано категорий: {stats.get('categories_created', 0)}")
+        print(f"   Всего создано тегов: {stats.get('tags_created', 0)}")
+        print(f"   Всего создано постов: {stats.get('posts_generated', 0)}")
+        print(f"   Последний анализ: {stats.get('last_analysis', 'Никогда')}")
+        
+    except Exception as e:
+        print(f"❌ Ошибка автономной генерации: {e}")
+
+def autonomous_status(args):
+    """Статус автономной ИИ системы"""
+    print("🔍 Получаем статус автономной ИИ системы...")
+    
+    try:
+        stats = get_autonomous_stats()
+        
+        print("\n" + "="*60)
+        print("🤖 СТАТУС АВТОНОМНОЙ ИИ СИСТЕМЫ")
+        print("="*60)
+        
+        print(f"📊 Статистика работы:")
+        print(f"   Создано категорий: {stats.get('categories_created', 0)}")
+        print(f"   Создано тегов: {stats.get('tags_created', 0)}")
+        print(f"   Создано постов: {stats.get('posts_generated', 0)}")
+        print(f"   Проанализировано трендов: {stats.get('trends_analyzed', 0)}")
+        print(f"   Последний анализ: {stats.get('last_analysis', 'Никогда')}")
+        
+        # Показываем текущие категории
+        categories = Category.query.all()
+        print(f"\n📂 Текущие категории ({len(categories)}):")
+        for cat in categories:
+            posts_count = cat.get_posts_count()
+            print(f"   • {cat.name}: {posts_count} постов")
+        
+        # Показываем популярные теги
+        from blog.models import Tag
+        popular_tags = db.session.query(Tag.name, db.func.count(Tag.id)).join(
+            Tag.posts
+        ).group_by(Tag.name).order_by(db.func.count(Tag.id).desc()).limit(5).all()
+        
+        if popular_tags:
+            print(f"\n🏷️ Популярные теги:")
+            for tag_name, count in popular_tags:
+                print(f"   • {tag_name}: {count} постов")
+        
+        print("="*60)
+        
+    except Exception as e:
+        print(f"❌ Ошибка получения статуса: {e}")
+
 def main():
     """Основная функция"""
     parser = argparse.ArgumentParser(description='Менеджер ИИ контента для блога')
@@ -383,6 +468,11 @@ def main():
     
     ai_monitor_parser = subparsers.add_parser('ai-monitor', help='Мониторинг ИИ системы')
     
+    # Команды автономной ИИ системы
+    autonomous_generate_parser = subparsers.add_parser('autonomous', help='Автономная генерация контента с категориями и тегами')
+    
+    autonomous_status_parser = subparsers.add_parser('autonomous-status', help='Статус автономной ИИ системы')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -414,6 +504,10 @@ def main():
             ai_optimize(args)
         elif args.command == 'ai-monitor':
             ai_monitor(args)
+        elif args.command == 'autonomous':
+            autonomous_generate(args)
+        elif args.command == 'autonomous-status':
+            autonomous_status(args)
 
 if __name__ == '__main__':
     main()
