@@ -62,3 +62,13 @@ class UserListSchema(Schema):
     
     def get_posts_count(self, obj):
         return obj.posts.filter_by(is_published=True).count()
+
+class UserUpdateSchema(Schema):
+    """Схема для обновления профиля пользователя"""
+    username = fields.Str(validate=validate.Length(min=3, max=80))
+    first_name = fields.Str(validate=validate.Length(max=100))
+    last_name = fields.Str(validate=validate.Length(max=100))
+    bio = fields.Str(validate=validate.Length(max=500))
+    avatar = fields.Str(validate=validate.URL())
+    website = fields.Str(validate=validate.URL())
+    location = fields.Str(validate=validate.Length(max=100))
