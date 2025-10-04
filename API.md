@@ -1,12 +1,8 @@
 # 🔌 API Документация
 
-Полная документация REST API для Military Focus Blog System.
+## 📋 Обзор
 
-## 🌐 Базовый URL
-
-```
-http://localhost:5000/api
-```
+REST API предоставляет программный доступ к функциям блога. Все endpoints возвращают JSON.
 
 ## 🔐 Аутентификация
 
@@ -16,38 +12,41 @@ POST /api/auth/login
 Content-Type: application/json
 
 {
-  "username": "admin",
-  "password": "admin123"
+  "username": "user",
+  "password": "password"
 }
 ```
 
 **Ответ:**
 ```json
 {
-  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-  "token_type": "Bearer",
-  "expires_in": 3600
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "user_id": 1,
+  "username": "user"
 }
 ```
 
 ### Использование токена
 ```http
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+GET /api/posts
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
 ```
 
-## 📝 Посты
+## 📚 Endpoints
 
-### Получение списка постов
+### Посты
+
+#### Получить все посты
 ```http
-GET /api/posts?page=1&per_page=10&category=tech&search=python
+GET /api/posts?page=1&per_page=10
 ```
 
 **Параметры:**
-- `page` (int): Номер страницы (по умолчанию: 1)
-- `per_page` (int): Постов на страницу (по умолчанию: 10)
-- `category` (string): Фильтр по категории
-- `search` (string): Поиск по тексту
-- `published` (bool): Только опубликованные (по умолчанию: true)
+- `page` (int) - номер страницы (по умолчанию: 1)
+- `per_page` (int) - количество на странице (по умолчанию: 10)
+- `category_id` (int) - фильтр по категории
+- `tag` (string) - фильтр по тегу
+- `search` (string) - поиск по заголовку и содержанию
 
 **Ответ:**
 ```json
@@ -55,46 +54,32 @@ GET /api/posts?page=1&per_page=10&category=tech&search=python
   "posts": [
     {
       "id": 1,
-      "title": "Введение в Python",
-      "slug": "vvedenie-v-python",
-      "excerpt": "Краткое описание поста...",
-      "content": "Полное содержимое поста...",
+      "title": "Заголовок поста",
+      "slug": "zagolovok-posta",
+      "excerpt": "Краткое описание...",
       "author": {
         "id": 1,
-        "username": "admin",
-        "full_name": "Admin User"
+        "username": "admin"
       },
       "category": {
         "id": 1,
-        "name": "Программирование",
-        "slug": "programming"
+        "name": "Технологии"
       },
-      "tags": [
-        {"name": "Python", "slug": "python"},
-        {"name": "Tutorial", "slug": "tutorial"}
-      ],
-      "created_at": "2024-01-15T10:30:00Z",
-      "updated_at": "2024-01-15T10:30:00Z",
-      "published_at": "2024-01-15T10:30:00Z",
-      "views_count": 150,
+      "tags": ["AI", "Python"],
+      "views_count": 123,
       "comments_count": 5,
-      "likes_count": 12,
-      "reading_time": 5,
-      "url": "/post/vvedenie-v-python"
+      "created_at": "2025-10-04T12:00:00Z",
+      "published_at": "2025-10-04T12:00:00Z"
     }
   ],
-  "pagination": {
-    "page": 1,
-    "per_page": 10,
-    "total": 25,
-    "pages": 3,
-    "has_next": true,
-    "has_prev": false
-  }
+  "total": 50,
+  "page": 1,
+  "per_page": 10,
+  "pages": 5
 }
 ```
 
-### Получение конкретного поста
+#### Получить один пост
 ```http
 GET /api/posts/{id}
 ```
@@ -103,41 +88,40 @@ GET /api/posts/{id}
 ```json
 {
   "id": 1,
-  "title": "Введение в Python",
-  "slug": "vvedenie-v-python",
-  "content": "Полное содержимое поста...",
+  "title": "Заголовок поста",
+  "slug": "zagolovok-posta",
+  "content": "Полное содержание поста...",
+  "content_html": "<p>HTML версия...</p>",
   "excerpt": "Краткое описание...",
+  "featured_image": "/static/uploads/image.jpg",
   "author": {
     "id": 1,
     "username": "admin",
-    "full_name": "Admin User",
-    "avatar": "/static/avatars/admin.jpg"
+    "first_name": "Иван",
+    "last_name": "Иванов"
   },
   "category": {
     "id": 1,
-    "name": "Программирование",
-    "slug": "programming",
-    "color": "#3776ab"
+    "name": "Технологии",
+    "slug": "technology"
   },
   "tags": [
-    {"name": "Python", "slug": "python"},
-    {"name": "Tutorial", "slug": "tutorial"}
+    {"id": 1, "name": "AI"},
+    {"id": 2, "name": "Python"}
   ],
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-15T10:30:00Z",
-  "published_at": "2024-01-15T10:30:00Z",
-  "views_count": 150,
+  "meta_title": "SEO заголовок",
+  "meta_description": "SEO описание",
+  "views_count": 123,
+  "likes_count": 45,
   "comments_count": 5,
-  "likes_count": 12,
-  "reading_time": 5,
-  "is_featured": true,
-  "meta_title": "Введение в Python - Military Focus",
-  "meta_description": "Подробное руководство по изучению Python...",
-  "url": "/post/vvedenie-v-python"
+  "is_published": true,
+  "created_at": "2025-10-04T12:00:00Z",
+  "updated_at": "2025-10-04T13:00:00Z",
+  "published_at": "2025-10-04T12:00:00Z"
 }
 ```
 
-### Создание поста
+#### Создать пост
 ```http
 POST /api/posts
 Authorization: Bearer {token}
@@ -145,27 +129,15 @@ Content-Type: application/json
 
 {
   "title": "Новый пост",
-  "content": "Содержимое поста...",
-  "excerpt": "Краткое описание",
+  "content": "Содержание поста",
   "category_id": 1,
-  "tags": ["Python", "Tutorial"],
-  "is_published": true,
-  "is_featured": false
+  "tags": ["AI", "ML"],
+  "excerpt": "Краткое описание",
+  "is_published": true
 }
 ```
 
-**Ответ:**
-```json
-{
-  "id": 26,
-  "title": "Новый пост",
-  "slug": "novyy-post",
-  "url": "/post/novyy-post",
-  "created_at": "2024-01-15T12:00:00Z"
-}
-```
-
-### Обновление поста
+#### Обновить пост
 ```http
 PUT /api/posts/{id}
 Authorization: Bearer {token}
@@ -173,69 +145,19 @@ Content-Type: application/json
 
 {
   "title": "Обновленный заголовок",
-  "content": "Обновленное содержимое...",
-  "is_published": true
+  "content": "Обновленное содержание"
 }
 ```
 
-### Удаление поста
+#### Удалить пост
 ```http
 DELETE /api/posts/{id}
 Authorization: Bearer {token}
 ```
 
-## 👥 Пользователи
+### Категории
 
-### Получение профиля пользователя
-```http
-GET /api/users/{id}
-```
-
-**Ответ:**
-```json
-{
-  "id": 1,
-  "username": "admin",
-  "email": "admin@example.com",
-  "first_name": "Admin",
-  "last_name": "User",
-  "full_name": "Admin User",
-  "bio": "Администратор системы",
-  "avatar": "/static/avatars/admin.jpg",
-  "website": "https://example.com",
-  "location": "Москва",
-  "is_admin": true,
-  "is_active": true,
-  "created_at": "2024-01-01T00:00:00Z",
-  "last_seen": "2024-01-15T12:00:00Z",
-  "posts_count": 15,
-  "comments_count": 45,
-  "reputation_score": 100
-}
-```
-
-### Получение постов пользователя
-```http
-GET /api/users/{id}/posts?page=1&per_page=10
-```
-
-### Обновление профиля
-```http
-PUT /api/users/{id}
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "first_name": "Новое имя",
-  "last_name": "Новая фамилия",
-  "bio": "Обновленная биография",
-  "website": "https://newsite.com"
-}
-```
-
-## 📂 Категории
-
-### Получение списка категорий
+#### Получить все категории
 ```http
 GET /api/categories
 ```
@@ -246,32 +168,18 @@ GET /api/categories
   "categories": [
     {
       "id": 1,
-      "name": "Программирование",
-      "slug": "programming",
-      "description": "Статьи о программировании",
-      "color": "#3776ab",
-      "posts_count": 15,
-      "url": "/category/programming"
-    },
-    {
-      "id": 2,
-      "name": "ИИ и ML",
-      "slug": "ai-ml",
-      "description": "Искусственный интеллект и машинное обучение",
-      "color": "#ff6b6b",
-      "posts_count": 8,
-      "url": "/category/ai-ml"
+      "name": "Технологии",
+      "slug": "technology",
+      "description": "Статьи о технологиях",
+      "color": "#007bff",
+      "posts_count": 25,
+      "parent_id": null
     }
   ]
 }
 ```
 
-### Получение постов категории
-```http
-GET /api/categories/{id}/posts?page=1&per_page=10
-```
-
-### Создание категории
+#### Создать категорию
 ```http
 POST /api/categories
 Authorization: Bearer {token}
@@ -284,43 +192,11 @@ Content-Type: application/json
 }
 ```
 
-## 🏷️ Теги
+### Комментарии
 
-### Получение популярных тегов
+#### Получить комментарии к посту
 ```http
-GET /api/tags?limit=20
-```
-
-**Ответ:**
-```json
-{
-  "tags": [
-    {
-      "name": "Python",
-      "slug": "python",
-      "posts_count": 25,
-      "color": "#3776ab"
-    },
-    {
-      "name": "Flask",
-      "slug": "flask",
-      "posts_count": 18,
-      "color": "#000000"
-    }
-  ]
-}
-```
-
-### Получение постов тега
-```http
-GET /api/tags/{slug}/posts?page=1&per_page=10
-```
-
-## 💬 Комментарии
-
-### Получение комментариев поста
-```http
-GET /api/posts/{id}/comments?page=1&per_page=20
+GET /api/posts/{post_id}/comments
 ```
 
 **Ответ:**
@@ -332,42 +208,31 @@ GET /api/posts/{id}/comments?page=1&per_page=20
       "content": "Отличная статья!",
       "author": {
         "id": 2,
-        "username": "user1",
-        "full_name": "User One"
+        "username": "user1"
       },
-      "created_at": "2024-01-15T11:00:00Z",
-      "is_approved": true,
       "parent_id": null,
+      "likes_count": 3,
+      "created_at": "2025-10-04T14:00:00Z",
       "replies": [
         {
           "id": 2,
-          "content": "Спасибо за комментарий!",
+          "content": "Согласен!",
           "author": {
-            "id": 1,
-            "username": "admin",
-            "full_name": "Admin User"
+            "id": 3,
+            "username": "user2"
           },
-          "created_at": "2024-01-15T11:30:00Z",
-          "is_approved": true,
-          "parent_id": 1
+          "parent_id": 1,
+          "created_at": "2025-10-04T14:30:00Z"
         }
       ]
     }
-  ],
-  "pagination": {
-    "page": 1,
-    "per_page": 20,
-    "total": 5,
-    "pages": 1,
-    "has_next": false,
-    "has_prev": false
-  }
+  ]
 }
 ```
 
-### Создание комментария
+#### Добавить комментарий
 ```http
-POST /api/posts/{id}/comments
+POST /api/posts/{post_id}/comments
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -377,178 +242,77 @@ Content-Type: application/json
 }
 ```
 
-### Одобрение комментария
-```http
-POST /api/comments/{id}/approve
-Authorization: Bearer {token}
-```
+### Пользователи
 
-### Удаление комментария
+#### Получить профиль
 ```http
-DELETE /api/comments/{id}
-Authorization: Bearer {token}
-```
-
-## 🔍 Поиск
-
-### Поиск с автодополнением
-```http
-GET /api/search/suggestions?q=python
+GET /api/users/{id}
 ```
 
 **Ответ:**
 ```json
 {
-  "suggestions": [
-    {
-      "title": "Введение в Python",
-      "description": "Подробное руководство по изучению Python...",
-      "url": "/post/vvedenie-v-python",
-      "icon": "fa-newspaper",
-      "type": "post"
-    },
-    {
-      "title": "Python",
-      "description": "Популярный тег",
-      "url": "/tag/python",
-      "icon": "fa-tag",
-      "type": "tag"
-    }
-  ]
+  "id": 1,
+  "username": "admin",
+  "first_name": "Иван",
+  "last_name": "Иванов",
+  "bio": "Разработчик и блогер",
+  "avatar": "/static/uploads/avatars/user1.jpg",
+  "posts_count": 45,
+  "comments_count": 123,
+  "reputation_score": 500,
+  "created_at": "2025-01-01T00:00:00Z"
 }
 ```
 
-### Поиск постов
+#### Обновить профиль
 ```http
-GET /api/search/posts?q=python&page=1&per_page=10
+PUT /api/users/profile
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "first_name": "Иван",
+  "last_name": "Иванов",
+  "bio": "Обновленная биография"
+}
 ```
+
+### Поиск
+
+#### Поиск контента
+```http
+GET /api/search?q=искусственный+интеллект&type=posts
+```
+
+**Параметры:**
+- `q` (string) - поисковый запрос
+- `type` (string) - тип контента (posts, users, tags)
+- `page` (int) - страница результатов
 
 **Ответ:**
 ```json
 {
-  "posts": [
+  "results": [
     {
+      "type": "post",
       "id": 1,
-      "title": "Введение в Python",
-      "slug": "vvedenie-v-python",
-      "excerpt": "Подробное руководство...",
-      "author": "Admin User",
-      "category": "Программирование",
-      "created_at": "2024-01-15T10:30:00Z",
-      "views_count": 150,
-      "comments_count": 5,
-      "url": "/post/vvedenie-v-python"
+      "title": "Искусственный интеллект в 2025",
+      "excerpt": "...",
+      "url": "/blog/post/iskusstvennyj-intellekt-v-2025",
+      "score": 0.95
     }
   ],
-  "total": 1,
-  "page": 1,
-  "pages": 1,
-  "has_next": false,
-  "has_prev": false
+  "total": 15,
+  "query": "искусственный интеллект"
 }
 ```
 
-## 🤖 ИИ API
+### Статистика
 
-### Генерация контента
+#### Общая статистика
 ```http
-POST /api/ai/generate
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "type": "post",
-  "topic": "Искусственный интеллект",
-  "length": "medium",
-  "style": "technical",
-  "language": "ru",
-  "provider": "openai"
-}
-```
-
-**Ответ:**
-```json
-{
-  "content": "Сгенерированный контент...",
-  "title": "Сгенерированный заголовок",
-  "excerpt": "Краткое описание...",
-  "keywords": ["ИИ", "машинное обучение", "нейронные сети"],
-  "reading_time": 8,
-  "provider": "openai",
-  "model": "gpt-4",
-  "tokens_used": 1250
-}
-```
-
-### Анализ текста
-```http
-POST /api/ai/analyze
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "text": "Текст для анализа...",
-  "analysis_type": "sentiment"
-}
-```
-
-**Ответ:**
-```json
-{
-  "sentiment": {
-    "score": 0.8,
-    "label": "positive",
-    "confidence": 0.95
-  },
-  "keywords": [
-    {"word": "программирование", "score": 0.9},
-    {"word": "python", "score": 0.8}
-  ],
-  "readability": {
-    "score": 75,
-    "level": "intermediate"
-  },
-  "language": "ru",
-  "word_count": 250
-}
-```
-
-### Оптимизация SEO
-```http
-POST /api/ai/seo-optimize
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "title": "Заголовок поста",
-  "content": "Содержимое поста...",
-  "target_keywords": ["python", "программирование"]
-}
-```
-
-**Ответ:**
-```json
-{
-  "optimized_title": "Оптимизированный заголовок",
-  "meta_description": "Оптимизированное описание...",
-  "suggestions": [
-    "Добавьте больше ключевых слов в заголовок",
-    "Увеличьте длину контента до 300+ слов"
-  ],
-  "seo_score": 85,
-  "keyword_density": {
-    "python": 2.5,
-    "программирование": 1.8
-  }
-}
-```
-
-## 📊 Аналитика
-
-### Получение статистики
-```http
-GET /api/analytics/stats
-Authorization: Bearer {token}
+GET /api/stats
 ```
 
 **Ответ:**
@@ -556,202 +320,208 @@ Authorization: Bearer {token}
 {
   "posts": {
     "total": 150,
-    "published": 120,
-    "drafts": 30,
-    "this_month": 15
+    "published": 140,
+    "drafts": 10
   },
   "users": {
     "total": 500,
-    "active": 350,
+    "active": 450,
     "new_this_month": 25
   },
   "comments": {
-    "total": 1200,
-    "approved": 1100,
-    "pending": 100
+    "total": 1500,
+    "today": 15,
+    "pending_moderation": 3
   },
   "views": {
     "total": 50000,
-    "this_month": 5000,
-    "popular_posts": [
-      {
-        "id": 1,
-        "title": "Введение в Python",
-        "views": 1500
-      }
-    ]
+    "today": 500,
+    "average_per_post": 357
   }
 }
 ```
 
-### Получение SEO метрик
+#### Популярные посты
 ```http
-GET /api/analytics/seo
+GET /api/stats/popular?period=week&limit=10
+```
+
+**Параметры:**
+- `period` (string) - период (day, week, month, all)
+- `limit` (int) - количество постов
+
+### AI Функции
+
+#### Сгенерировать пост
+```http
+POST /api/ai/generate
 Authorization: Bearer {token}
-```
+Content-Type: application/json
 
-**Ответ:**
-```json
 {
-  "overall_score": 85,
-  "posts_analyzed": 120,
-  "average_score": 82,
-  "issues": {
-    "critical": 5,
-    "warning": 15,
-    "info": 30
-  },
-  "recommendations": [
-    "Улучшите мета-описания для 10 постов",
-    "Добавьте alt-теги для изображений"
-  ]
+  "category": "технологии",
+  "topic": "искусственный интеллект",
+  "tone": "professional",
+  "length": "medium"
 }
 ```
 
-## 🔧 Система
+**Ответ:**
+```json
+{
+  "title": "Будущее искусственного интеллекта",
+  "content": "Сгенерированный контент...",
+  "tags": ["AI", "технологии", "будущее"],
+  "meta_description": "SEO описание",
+  "quality_score": 0.85
+}
+```
 
-### Проверка здоровья системы
+#### Анализ текста
 ```http
-GET /api/health
+POST /api/ai/analyze
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "text": "Текст для анализа..."
+}
 ```
 
 **Ответ:**
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2024-01-15T12:00:00Z",
-  "version": "1.0.0",
-  "database": "connected",
-  "cache": "connected",
-  "ai_services": {
-    "openai": "available",
-    "anthropic": "available",
-    "google": "available"
-  },
-  "performance": {
-    "response_time": 120,
-    "memory_usage": 45.2,
-    "cpu_usage": 12.5
+  "sentiment": "positive",
+  "score": 0.75,
+  "keywords": ["ключевое", "слово"],
+  "entities": ["Компания", "Продукт"],
+  "readability": {
+    "score": 85,
+    "level": "easy"
   }
 }
 ```
 
-### Получение версии
+#### SEO оптимизация
 ```http
-GET /api/version
+POST /api/ai/optimize-seo
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "title": "Заголовок",
+  "content": "Содержание для оптимизации",
+  "keywords": ["ключевое", "слово"]
+}
 ```
 
 **Ответ:**
 ```json
 {
-  "version": "1.0.0",
-  "build": "2024-01-15",
-  "python": "3.11.0",
-  "flask": "2.3.3",
-  "features": [
-    "ai_content_generation",
-    "seo_optimization",
-    "advanced_security",
-    "performance_monitoring"
-  ]
+  "optimized_title": "Оптимизированный заголовок | Ключевое слово",
+  "meta_description": "SEO оптимизированное описание...",
+  "suggestions": [
+    "Добавьте больше внутренних ссылок",
+    "Используйте ключевые слова в подзаголовках"
+  ],
+  "seo_score": 0.82
 }
 ```
 
-## 📝 Коды ошибок
+## 🔴 Коды ошибок
 
-### HTTP статус коды
-- `200` - Успешно
-- `201` - Создано
-- `400` - Неверный запрос
-- `401` - Не авторизован
-- `403` - Доступ запрещен
-- `404` - Не найдено
-- `422` - Ошибка валидации
-- `500` - Внутренняя ошибка сервера
+| Код | Описание |
+|-----|----------|
+| 200 | OK - Успешно |
+| 201 | Created - Ресурс создан |
+| 400 | Bad Request - Неверный запрос |
+| 401 | Unauthorized - Требуется аутентификация |
+| 403 | Forbidden - Доступ запрещен |
+| 404 | Not Found - Ресурс не найден |
+| 422 | Unprocessable Entity - Ошибка валидации |
+| 429 | Too Many Requests - Превышен лимит запросов |
+| 500 | Internal Server Error - Ошибка сервера |
 
-### Формат ошибок
+**Пример ошибки:**
 ```json
 {
   "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Ошибка валидации данных",
+    "code": 422,
+    "message": "Validation failed",
     "details": {
-      "field": "title",
-      "message": "Заголовок обязателен"
+      "title": ["Это поле обязательно"],
+      "content": ["Минимальная длина 100 символов"]
     }
   }
 }
 ```
 
-## 🔒 Ограничения
+## 🚦 Rate Limiting
 
-### Rate Limiting
-- **Анонимные пользователи**: 100 запросов/час
-- **Авторизованные пользователи**: 1000 запросов/час
-- **Администраторы**: Без ограничений
+- **Анонимные пользователи:** 60 запросов в час
+- **Аутентифицированные:** 300 запросов в час
+- **AI endpoints:** 10 запросов в час
 
-### Размеры данных
-- **Максимальный размер поста**: 1MB
-- **Максимальный размер комментария**: 10KB
-- **Максимальный размер изображения**: 5MB
-
-## 📚 Примеры использования
-
-### JavaScript (Fetch API)
-```javascript
-// Получение постов
-const response = await fetch('/api/posts?page=1&per_page=10');
-const data = await response.json();
-console.log(data.posts);
-
-// Создание поста
-const newPost = await fetch('/api/posts', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + token
-  },
-  body: JSON.stringify({
-    title: 'Новый пост',
-    content: 'Содержимое...',
-    category_id: 1
-  })
-});
+Информация о лимитах в заголовках:
+```
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 299
+X-RateLimit-Reset: 1696425600
 ```
 
-### Python (requests)
+## 🔧 Примеры использования
+
+### Python
 ```python
 import requests
 
-# Получение постов
-response = requests.get('http://localhost:5000/api/posts')
-posts = response.json()['posts']
+# Аутентификация
+response = requests.post('http://localhost:5000/api/auth/login', json={
+    'username': 'admin',
+    'password': 'password'
+})
+token = response.json()['access_token']
 
-# Создание поста
+# Получение постов
 headers = {'Authorization': f'Bearer {token}'}
-data = {
-    'title': 'Новый пост',
-    'content': 'Содержимое...',
-    'category_id': 1
-}
-response = requests.post('http://localhost:5000/api/posts', 
-                        json=data, headers=headers)
+posts = requests.get('http://localhost:5000/api/posts', headers=headers)
+print(posts.json())
+```
+
+### JavaScript
+```javascript
+// Аутентификация
+const login = await fetch('/api/auth/login', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    username: 'admin',
+    password: 'password'
+  })
+});
+const {access_token} = await login.json();
+
+// Получение постов
+const posts = await fetch('/api/posts', {
+  headers: {'Authorization': `Bearer ${access_token}`}
+});
+console.log(await posts.json());
 ```
 
 ### cURL
 ```bash
-# Получение постов
-curl -X GET "http://localhost:5000/api/posts?page=1&per_page=10"
-
-# Создание поста
-curl -X POST "http://localhost:5000/api/posts" \
+# Аутентификация
+TOKEN=$(curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{"title": "Новый пост", "content": "Содержимое..."}'
+  -d '{"username":"admin","password":"password"}' \
+  | jq -r '.access_token')
+
+# Получение постов
+curl http://localhost:5000/api/posts \
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 ---
 
-**API готов к использованию!** 🚀
-
-Для получения дополнительной информации см. [полное описание функций](BLOG_FUNCTIONS.md).
+*API версия: 1.0*  
+*Документация обновлена: 4 октября 2025*
