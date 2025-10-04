@@ -744,6 +744,9 @@ class PerfectAIContentGenerator:
         try:
             response = await self.provider_manager.generate_content(request)
             
+            if response is None:
+                raise Exception("No response from provider")
+            
             # Анализ качества
             analysis = self.content_analyzer.analyze_text(response.content)
             response.quality_score = self._calculate_quality_score(analysis)
@@ -765,7 +768,20 @@ class PerfectAIContentGenerator:
         except Exception as e:
             self.logger.error(f"Error generating content: {str(e)}")
             self.monitor.log_error(e, request)
-            self.monitor.log_request(request, None, False)
+            # Создаем фиктивный ответ для логирования
+            from datetime import datetime
+            dummy_response = AIResponse(
+                content="",
+                provider=request.provider,
+                model="error",
+                tokens_used=0,
+                processing_time=0.0,
+                quality_score=0.0,
+                cost=0.0,
+                timestamp=datetime.utcnow(),
+                metadata={'error': str(e)}
+            )
+            self.monitor.log_request(request, dummy_response, False)
             raise
     
     async def _try_alternative_provider(self, request: AIRequest) -> AIResponse:
