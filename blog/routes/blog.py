@@ -2,9 +2,9 @@
 Маршруты блога
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, current_app, Response, send_file
 from flask_login import login_required, current_user
-from blog.models import Post, Category, Comment, Tag
+from blog.models import Post, Category, Comment, Tag, User
 from blog.forms import PostForm, CommentForm
 from blog.database import db
 from datetime import datetime
@@ -216,3 +216,77 @@ def author_posts(username):
                          title=f'Посты автора {author.get_full_name()}',
                          author=author,
                          posts=posts)
+
+@bp.route('/post/<slug>/export/pdf')
+def export_post_pdf(slug):
+    """Экспорт поста в PDF"""
+    post = Post.query.filter_by(slug=slug).first_or_404()
+    
+    # Проверяем доступность поста
+    if not post.is_published and post.author != current_user:
+        abort(403)
+    
+    try:
+        from blog.utils.pdf_generator import SimplePDFGenerator
+        
+        # Генерируем HTML для PDF
+        html_content = SimplePDFGenerator.generate_html_for_pdf(post)
+        
+        # Возвращаем HTML с заголовками для печати
+        response = Response(html_content)
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
+        response.headers['Content-Disposition'] = f'inline; filename="{post.slug}.html"'
+        
+        # Добавляем JavaScript для автоматической печати
+        auto_print_script = """
+        <script>
+            window.onload = function() {
+                window.print();
+                setTimeout(function() {
+                    window.close();
+                }, 100);
+            }
+        </script>
+        """
+        
+        # Вставляем скрипт перед </body>
+        html_content = html_content.replace('</body>', auto_print_script + '</body>')
+        response.set_data(html_content)
+        
+        return response
+        
+    except ImportError:
+        # Если библиотеки PDF не установлены, используем простой HTML
+        return render_template('blog/post_print.html', post=post)
+
+@bp.route('/my-posts/export/pdf')
+@login_required  
+def export_my_posts_pdf():
+    """Экспорт всех постов пользователя в PDF"""
+    posts = Post.query.filter_by(author_id=current_user.id).order_by(Post.created_at.desc()).all()
+    
+    if not posts:
+        flash('У вас нет постов для экспорта', 'warning')
+        return redirect(url_for('blog.my_posts'))
+    
+    try:
+        from blog.utils.pdf_generator import PDFGenerator
+        
+        # Генерируем PDF
+        pdf_gen = PDFGenerator()
+        pdf_buffer = pdf_gen.generate_posts_collection_pdf(
+            posts, 
+            title=f"Посты автора {current_user.username}"
+        )
+        
+        # Отправляем PDF
+        return send_file(
+            pdf_buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=f'posts_{current_user.username}_{datetime.now().strftime("%Y%m%d")}.pdf'
+        )
+        
+    except Exception as e:
+        # Fallback к HTML версии
+        return render_template('blog/posts_print.html', posts=posts, author=current_user)

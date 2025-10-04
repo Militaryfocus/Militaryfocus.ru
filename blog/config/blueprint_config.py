@@ -10,6 +10,9 @@ from blog.routes.ai_admin import bp as ai_admin_bp
 from blog.routes.system_admin import bp as system_admin_bp
 from blog.routes.seo import bp as seo_bp
 from blog.routes.api import api_bp
+from blog.routes.author_stats import bp as author_stats_bp
+from blog.routes.feeds import bp as feeds_bp
+from blog.routes.export import bp as export_bp
 
 class BlueprintConfig:
     """Конфигурация Blueprint'ов"""
@@ -25,3 +28,6 @@ class BlueprintConfig:
         app.register_blueprint(system_admin_bp, url_prefix='/system')
         app.register_blueprint(seo_bp)
         app.register_blueprint(api_bp)
+        app.register_blueprint(author_stats_bp)
+        app.register_blueprint(feeds_bp)
+        app.register_blueprint(export_bp)
