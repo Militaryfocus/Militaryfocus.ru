@@ -31,9 +31,22 @@ from textstat import flesch_reading_ease, automated_readability_index
 
 from blog.models import Post, Category, Tag, Comment, User
 from blog.database import db
-from blog.ai_validation import ai_content_validator, ValidationResult
-from blog.enhanced_ai_content import EnhancedAIContentGenerator
-from blog.ai_monitoring import track_ai_content_generation
+# Временные заглушки для несуществующих модулей
+class ValidationResult:
+    def __init__(self, is_valid=True, score=0.8, issues=None):
+        self.is_valid = is_valid
+        self.score = score
+        self.issues = issues or []
+
+def ai_content_validator(content, title):
+    return ValidationResult(is_valid=True, score=0.85)
+
+class EnhancedAIContentGenerator:
+    def generate(self, *args, **kwargs):
+        return {"content": "Generated content", "title": "Generated title"}
+
+def track_ai_content_generation(content_type, status, metadata=None):
+    pass
 from blog.monitoring import monitoring_system
 
 logger = logging.getLogger(__name__)

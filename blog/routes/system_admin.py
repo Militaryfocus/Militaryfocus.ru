@@ -257,7 +257,7 @@ def performance_test():
             
         elif test_type == 'ai_generation':
             # Тест ИИ генерации
-            from blog.ai_content import AIContentGenerator
+            from blog.ai_content_perfect import AIContentGenerator
             
             start_time = time.time()
             generator = AIContentGenerator()

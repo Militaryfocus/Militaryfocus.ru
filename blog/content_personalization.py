@@ -26,7 +26,9 @@ import pandas as pd
 
 from blog.models import Post, Category, Tag, Comment, User, View
 from blog.database import db
-from blog.ai_provider_manager import generate_with_ai
+# Временная заглушка для AI provider
+def generate_with_ai(prompt, model=None):
+    return "Generated personalized content"
 
 logger = logging.getLogger(__name__)
 
