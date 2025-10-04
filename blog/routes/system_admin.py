@@ -8,7 +8,7 @@ from functools import wraps
 import json
 from datetime import datetime
 
-from blog.fault_tolerance_perfect import perfect_fault_tolerance_system
+# from blog.fault_tolerance_perfect import perfect_fault_tolerance_system  # Временно отключено
 from blog.auto_seo_optimizer import AutoSEOOptimizer
 from blog.smart_interlinking import SmartInterlinkingSystem
 from blog.monitoring import MonitoringSystem
