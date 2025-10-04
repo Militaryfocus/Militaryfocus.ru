@@ -1,0 +1,12 @@
+2025-10-04 14:46:26,672 - __main__ - INFO - Создан администратор: admin / admin123
+2025-10-04 14:46:26,672 - __main__ - ERROR - ⚠️ Ошибка инициализации системных компонентов: 'PerfectFaultToleranceSystem' object has no attribute 'start'
+2025-10-04 14:46:26,686 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.30.0.2:5000
+2025-10-04 14:46:26,686 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-04 14:46:26,687 - werkzeug - INFO -  * Restarting with stat
+2025-10-04 14:46:40,264 - root - WARNING - Failed to start Prometheus server: [Errno 98] Address already in use
+2025-10-04 14:46:41,452 - __main__ - ERROR - ⚠️ Ошибка инициализации системных компонентов: 'PerfectFaultToleranceSystem' object has no attribute 'start'
+2025-10-04 14:46:41,462 - werkzeug - WARNING -  * Debugger is active!
+2025-10-04 14:46:41,463 - werkzeug - INFO -  * Debugger PIN: 711-750-672
