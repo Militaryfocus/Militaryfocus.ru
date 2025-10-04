@@ -422,6 +422,10 @@ class Post(db.Model):
         words_count = len(re.sub(r'<[^>]+>', '', self.content).split())
         return max(1, words_count // 200)  # 200 слов в минуту
     
+    def get_reading_time(self):
+        """Получение времени чтения"""
+        return self._calculate_reading_time()
+    
     def get_featured_image_url(self, size='large'):
         """Получение URL изображения поста"""
         if self.featured_image:
