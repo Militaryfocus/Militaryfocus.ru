@@ -16,7 +16,8 @@ import secrets
 from typing import Optional, List, Dict, Any
 from sqlalchemy import Index, event, func, text
 from sqlalchemy.orm import validates
-from sqlalchemy.dialects.postgresql import JSONB, ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import JSON
 from blog import db
 
 class User(UserMixin, db.Model):
@@ -43,7 +44,7 @@ class User(UserMixin, db.Model):
     is_active = db.Column(db.Boolean, default=True, index=True)
     is_verified = db.Column(db.Boolean, default=False)
     email_notifications = db.Column(db.Boolean, default=True)
-    privacy_settings = db.Column(JSONB, default=lambda: {
+    privacy_settings = db.Column(JSON, default=lambda: {
         'show_email': False,
         'show_location': False,
         'show_birth_date': False,
@@ -71,10 +72,10 @@ class User(UserMixin, db.Model):
     
     # Связи
     posts = db.relationship('Post', backref='author', lazy='dynamic', cascade='all, delete-orphan')
-    comments = db.relationship('Comment', backref='author', lazy='dynamic', cascade='all, delete-orphan')
-    bookmarks = db.relationship('Bookmark', backref='user', lazy='dynamic', cascade='all, delete-orphan')
-    notifications = db.relationship('Notification', backref='user', lazy='dynamic', cascade='all, delete-orphan')
-    sessions = db.relationship('UserSession', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    comments = db.relationship('Comment', foreign_keys='Comment.author_id', backref='author', lazy='dynamic', cascade='all, delete-orphan')
+    bookmarks = db.relationship('Bookmark', backref='bookmark_user', lazy='dynamic', cascade='all, delete-orphan')
+    notifications = db.relationship('Notification', backref='notification_user', lazy='dynamic', cascade='all, delete-orphan')
+    sessions = db.relationship('UserSession', backref='session_user', lazy='dynamic', cascade='all, delete-orphan')
     
     # Индексы
     __table_args__ = (
@@ -287,7 +288,7 @@ class Post(db.Model):
     # Изображения
     featured_image = db.Column(db.String(255))
     featured_image_alt = db.Column(db.String(255))
-    gallery_images = db.Column(JSONB, default=list)  # Список изображений
+    gallery_images = db.Column(JSON, default=list)  # Список изображений
     
     # Статус и видимость
     is_published = db.Column(db.Boolean, default=False, index=True)

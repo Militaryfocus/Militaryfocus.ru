@@ -214,7 +214,12 @@ class IPWhitelist:
     def load_whitelist(self):
         """Загрузка белого списка"""
         # Загружаем из файла или базы данных
-        whitelist_file = os.path.join(current_app.root_path, 'security', 'ip_whitelist.txt')
+        try:
+            whitelist_file = os.path.join(current_app.root_path, 'security', 'ip_whitelist.txt')
+        except RuntimeError:
+            # Если нет контекста приложения, используем относительный путь
+            whitelist_file = os.path.join('security', 'ip_whitelist.txt')
+        
         if os.path.exists(whitelist_file):
             with open(whitelist_file, 'r') as f:
                 for line in f:
@@ -251,11 +256,17 @@ class GeolocationTracker:
     def load_geoip_database(self):
         """Загрузка базы данных GeoIP"""
         try:
-            db_path = os.path.join(current_app.root_path, 'security', 'GeoLite2-City.mmdb')
+            try:
+                db_path = os.path.join(current_app.root_path, 'security', 'GeoLite2-City.mmdb')
+            except RuntimeError:
+                db_path = os.path.join('security', 'GeoLite2-City.mmdb')
             if os.path.exists(db_path):
                 self.geoip_db = geoip2.database.Reader(db_path)
         except Exception as e:
-            current_app.logger.warning(f"Failed to load GeoIP database: {e}")
+            # Используем стандартный логгер вместо current_app
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Failed to load GeoIP database: {e}")
     
     def get_location(self, ip_address: str) -> Dict[str, str]:
         """Получение геолокации по IP"""
@@ -276,7 +287,10 @@ class SecurityAuditLogger:
     """Система аудита безопасности"""
     
     def __init__(self):
-        self.log_file = os.path.join(current_app.root_path, 'logs', 'security.log')
+        try:
+            self.log_file = os.path.join(current_app.root_path, 'logs', 'security.log')
+        except RuntimeError:
+            self.log_file = os.path.join('logs', 'security.log')
         self.ensure_log_directory()
     
     def ensure_log_directory(self):
@@ -323,7 +337,9 @@ class SecurityAuditLogger:
             database.session.add(security_log)
             database.session.commit()
         except Exception as e:
-            current_app.logger.error(f"Failed to log security event to database: {e}")
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to log security event to database: {e}")
 
 class SuspiciousActivityDetector:
     """Детектор подозрительной активности"""
@@ -582,3 +598,18 @@ def verified_user_required(f):
 
 # Глобальный экземпляр менеджера безопасности
 security_manager = SecurityManager()
+
+def init_security_headers(app):
+    """Инициализация заголовков безопасности"""
+    @app.after_request
+    def set_security_headers(response):
+        """Установка заголовков безопасности"""
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        return response
+    
+    return app

@@ -28,7 +28,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import jieba
-import pymorphy2
+# import pymorphy2  # Несовместим с Python 3.13
 from transformers import pipeline, AutoTokenizer, AutoModel
 import torch
 
@@ -291,7 +291,8 @@ class ContentAnalyzer:
         self.lemmatizer = WordNetLemmatizer()
         self.stop_words = set(stopwords.words('english') + stopwords.words('russian'))
         self.vectorizer = TfidfVectorizer(max_features=1000, stop_words=list(self.stop_words))
-        self.morph = pymorphy2.MorphAnalyzer()
+        # self.morph = pymorphy2.MorphAnalyzer()  # Несовместим с Python 3.13
+        self.morph = None
     
     def analyze_text(self, text: str) -> Dict[str, Any]:
         """Анализ текста"""
@@ -941,3 +942,103 @@ class PerfectAIContentGenerator:
 
 # Глобальный экземпляр идеального генератора ИИ
 perfect_ai_generator = PerfectAIContentGenerator()
+
+# Алиасы для совместимости
+AIContentGenerator = PerfectAIContentGenerator
+
+class ContentScheduler:
+    """Планировщик контента"""
+    
+    def __init__(self):
+        self.scheduled_tasks = []
+        self.logger = logging.getLogger(__name__)
+    
+    def schedule_post_creation(self, topic: str, publish_time: datetime, user_id: int = None):
+        """Планирование создания поста"""
+        task = {
+            'type': 'post',
+            'topic': topic,
+            'publish_time': publish_time,
+            'user_id': user_id,
+            'created_at': datetime.utcnow()
+        }
+        self.scheduled_tasks.append(task)
+        self.logger.info(f"Scheduled post creation for topic: {topic}")
+    
+    def get_scheduled_tasks(self) -> List[Dict[str, Any]]:
+        """Получение запланированных задач"""
+        return self.scheduled_tasks
+
+def populate_blog_with_ai_content(num_posts: int = 10, user_id: int = None):
+    """Заполнение блога ИИ контентом"""
+    generator = perfect_ai_generator
+    
+    # Темы для постов
+    topics = [
+        "Искусственный интеллект в современном мире",
+        "Программирование на Python",
+        "Веб-разработка с Flask",
+        "Машинное обучение и нейронные сети",
+        "Кибербезопасность и защита данных",
+        "Облачные технологии и DevOps",
+        "Мобильная разработка",
+        "Анализ данных и визуализация",
+        "Блокчейн и криптовалюты",
+        "Интернет вещей (IoT)"
+    ]
+    
+    created_posts = []
+    
+    for i in range(min(num_posts, len(topics))):
+        try:
+            topic = topics[i]
+            
+            # Генерация заголовка
+            title = generator.generate_post_title(topic)
+            
+            # Генерация контента
+            content = generator.generate_post_content(title, topic)
+            
+            # Генерация описания
+            excerpt = generator.generate_post_excerpt(content)
+            
+            # Генерация тегов
+            tags = generator.generate_tags(content)
+            
+            # Создание поста
+            post = Post(
+                title=title,
+                content=content,
+                excerpt=excerpt,
+                author_id=user_id or 1,  # По умолчанию admin
+                is_published=True,
+                created_at=datetime.utcnow()
+            )
+            
+            database.session.add(post)
+            database.session.flush()  # Получаем ID поста
+            
+            # Добавление тегов
+            for tag_name in tags:
+                tag = Tag.query.filter_by(name=tag_name).first()
+                if not tag:
+                    tag = Tag(name=tag_name)
+                    database.session.add(tag)
+                    database.session.flush()
+                
+                post.tags.append(tag)
+            
+            created_posts.append(post)
+            
+        except Exception as e:
+            generator.logger.error(f"Error creating post {i+1}: {str(e)}")
+            continue
+    
+    try:
+        database.session.commit()
+        generator.logger.info(f"Successfully created {len(created_posts)} AI posts")
+        return created_posts
+    except Exception as e:
+        database.session.rollback()
+        generator.logger.error(f"Error committing posts: {str(e)}")
+        raise

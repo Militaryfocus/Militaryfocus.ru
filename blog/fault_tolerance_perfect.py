@@ -27,8 +27,8 @@ import requests
 from flask import current_app
 from sqlalchemy import text, create_engine
 from sqlalchemy.pool import QueuePool
-import docker
-import kubernetes
+# import docker  # Необязательный импорт
+# import kubernetes  # Необязательный импорт
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 
 from blog.models import db
@@ -901,3 +901,15 @@ class PerfectFaultToleranceSystem:
 
 # Глобальный экземпляр идеальной системы отказоустойчивости
 perfect_fault_tolerance_system = PerfectFaultToleranceSystem()
+
+# Функции для совместимости с app.py
+def init_fault_tolerance():
+    """Инициализация системы отказоустойчивости"""
+    global perfect_fault_tolerance_system
+    perfect_fault_tolerance_system.start()
+    return perfect_fault_tolerance_system
+
+def shutdown_fault_tolerance():
+    """Корректное завершение системы отказоустойчивости"""
+    global perfect_fault_tolerance_system
+    perfect_fault_tolerance_system.stop()

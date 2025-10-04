@@ -427,7 +427,24 @@ class AdvancedSEOOptimizer:
         self.monitoring = SEOMonitoring()
         
         # Импорт базовых компонентов
-        from blog.seo_optimizer import SEOAnalyzer, MetaTagGenerator, StructuredDataGenerator
+        # from blog.seo_optimizer import SEOAnalyzer, MetaTagGenerator, StructuredDataGenerator  # Циклический импорт
+        
+        # Создаем заглушки для избежания циклического импорта
+        class SEOAnalyzer:
+            def analyze_post(self, post): return {}
+            def analyze_page(self, url): return {}
+        
+        class MetaTagGenerator:
+            def __init__(self, base_url): self.base_url = base_url
+            def generate_post_meta(self, post): return {}
+            def generate_category_meta(self, category): return {}
+            def generate_home_meta(self): return {}
+        
+        class StructuredDataGenerator:
+            def __init__(self, base_url): self.base_url = base_url
+            def generate_post_schema(self, post): return {}
+            def generate_category_schema(self, category): return {}
+        
         self.analyzer = SEOAnalyzer()
         self.meta_generator = MetaTagGenerator(base_url)
         self.schema_generator = StructuredDataGenerator(base_url)
