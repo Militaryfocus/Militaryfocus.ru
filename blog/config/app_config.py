@@ -49,6 +49,19 @@ class AppConfig:
             response.headers['X-Frame-Options'] = 'DENY'
             response.headers['X-XSS-Protection'] = '1; mode=block'
             response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+            response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+            
+            # Content Security Policy
+            csp = "default-src 'self'; " \
+                  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; " \
+                  "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " \
+                  "img-src 'self' data: https:; " \
+                  "font-src 'self' https://cdnjs.cloudflare.com; " \
+                  "frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/; " \
+                  "connect-src 'self' https://api.openai.com https://api.anthropic.com"
+            
+            response.headers['Content-Security-Policy'] = csp
+            
             return response
         
         # Настройка Flask-Login
