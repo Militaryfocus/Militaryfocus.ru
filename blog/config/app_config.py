@@ -4,10 +4,10 @@
 
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_admin import Admin
+from blog.config.context_processors import inject_categories, inject_seo_meta
 
 class AppConfig:
     """Конфигурация приложения"""
@@ -36,7 +36,8 @@ class AppConfig:
         app.config['SESSION_COOKIE_SAMESITE'] = os.environ.get('SESSION_COOKIE_SAMESITE', 'Lax')
         
         # Инициализация расширений
-        from blog import db, login_manager, migrate
+        from blog.database import db
+        from blog import login_manager, migrate
         db.init_app(app)
         login_manager.init_app(app)
         migrate.init_app(app, db)
@@ -55,54 +56,8 @@ class AppConfig:
             from blog.models import User
             return User.query.get(int(user_id))
         
-        # Контекстные процессоры
-        @app.context_processor
-        def inject_categories():
-            from blog.models import Category
-            categories = Category.query.all()
-            return dict(categories=categories)
-        
-        @app.context_processor
-        def inject_seo_meta():
-            """Автоматическое добавление SEO мета-тегов"""
-            from blog.advanced_seo import advanced_seo_optimizer
-            from flask import request
-            
-            # Получение мета-тегов для текущей страницы
-            meta_tags = {}
-            
-            try:
-                # Определение типа страницы
-                if request.endpoint == 'blog.post_detail':
-                    # Для страниц постов
-                    from blog.models import Post
-                    slug = request.view_args.get('slug')
-                    if slug:
-                        post = Post.query.filter_by(slug=slug, is_published=True).first()
-                        if post:
-                            meta_tags = advanced_seo_optimizer.meta_generator.generate_post_meta(post)
-                
-                elif request.endpoint == 'blog.category_posts':
-                    # Для страниц категорий
-                    from blog.models import Category
-                    slug = request.view_args.get('slug')
-                    if slug:
-                        category = Category.query.filter_by(slug=slug).first()
-                        if category:
-                            meta_tags = advanced_seo_optimizer.meta_generator.generate_category_meta(category)
-                
-                elif request.endpoint == 'main.index':
-                    # Для главной страницы
-                    meta_tags = advanced_seo_optimizer.meta_generator.generate_home_meta()
-                
-            except Exception as e:
-                # В случае ошибки возвращаем базовые мета-теги
-                meta_tags = {
-                    'title': 'МойБлог - Современный блог с ИИ контентом',
-                    'description': 'Современный блог на Python Flask с автоматическим наполнением контентом',
-                    'keywords': 'блог, python, flask, искусственный интеллект'
-                }
-            
-            return dict(seo_meta=meta_tags)
+        # Регистрация контекстных процессоров из нового модуля
+        app.context_processor(inject_categories)
+        app.context_processor(inject_seo_meta)
         
         return app

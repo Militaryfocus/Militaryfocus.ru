@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from blog.models import User, Post, Category, Comment, Tag
 from blog.forms import CategoryForm
-from blog import db
+from blog.database import db
 from functools import wraps
 
 bp = Blueprint('admin', __name__)

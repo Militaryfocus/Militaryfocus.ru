@@ -34,8 +34,8 @@ from blog.api_perfect import *
 from blog.ui_perfect import *
 
 # Импорт существующих модулей
-from blog import db
-from blog import db as database
+from blog.database import db
+from blog.database import db as database
 
 class SystemStatus(Enum):
     """Статусы системы"""

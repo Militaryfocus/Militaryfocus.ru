@@ -33,8 +33,8 @@ from transformers import pipeline, AutoTokenizer, AutoModel
 import torch
 
 from blog.models import Post, Category, Tag, User
-from blog import db
-from blog import db as database
+from blog.database import db
+from blog.database import db as database
 
 # Загрузка NLTK данных
 try:

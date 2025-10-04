@@ -24,8 +24,8 @@ import redis
 from sqlalchemy import and_, or_
 
 from blog.models import User, UserSession, View
-from blog import db
-from blog import db as database
+from blog.database import db
+from blog.database import db as database
 
 class SecurityConfig:
     """Конфигурация безопасности"""

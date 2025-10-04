@@ -15,7 +15,7 @@ import threading
 from functools import wraps
 
 from blog.models import Post, User, Comment
-from blog import db
+from blog.database import db
 
 class SystemMonitor:
     """Монитор системных ресурсов"""

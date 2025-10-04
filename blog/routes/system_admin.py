@@ -13,7 +13,7 @@ from blog.auto_seo_optimizer import AutoSEOOptimizer
 from blog.smart_interlinking import SmartInterlinkingSystem
 from blog.monitoring import MonitoringSystem
 from blog.models import Post, Category
-from blog import db
+from blog.database import db
 
 bp = Blueprint('system_admin', __name__)
 

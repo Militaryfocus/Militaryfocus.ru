@@ -42,8 +42,8 @@ import memcached
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 
 from blog.models import Post, User, Category, Comment, Tag
-from blog import db
-from blog import db as database
+from blog.database import db
+from blog.database import db as database
 
 class CacheType(Enum):
     """Типы кэша"""

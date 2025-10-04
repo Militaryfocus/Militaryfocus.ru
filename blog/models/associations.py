@@ -2,7 +2,7 @@
 Таблицы связей many-to-many
 """
 
-from blog import db
+from blog.database import db
 
 # Таблица связей постов и тегов
 post_tags = db.Table('post_tags',

@@ -30,7 +30,7 @@ import nltk
 from textstat import flesch_reading_ease, automated_readability_index
 
 from blog.models import Post, Category, Tag, Comment, User
-from blog import db
+from blog.database import db
 from blog.ai_validation import ai_content_validator, ValidationResult
 from blog.enhanced_ai_content import EnhancedAIContentGenerator
 from blog.ai_monitoring import track_ai_content_generation

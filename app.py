@@ -7,7 +7,8 @@
 import os
 import logging
 from dotenv import load_dotenv
-from blog import create_app, db
+from blog import create_app
+from blog.database import db
 from blog.models import User, Post, Category, Comment
 
 # Настройка логирования

@@ -4,15 +4,16 @@
 
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 
+# Импортируем db из нового модуля database
+from blog.database import db, init_db
+
 # Инициализация расширений
-db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
 admin = Admin()

@@ -3,7 +3,7 @@
 """
 
 from datetime import datetime
-from blog import db
+from blog.database import db
 
 class View(db.Model):
     """Модель просмотра поста"""

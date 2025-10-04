@@ -18,7 +18,7 @@ from sqlalchemy import Index, event, func, text
 from sqlalchemy.orm import validates
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy import JSON
-from blog import db
+from blog.database import db
 
 class User(UserMixin, db.Model):
     """Идеальная модель пользователя с расширенным функционалом"""

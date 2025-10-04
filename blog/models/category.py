@@ -6,7 +6,7 @@ from datetime import datetime
 from slugify import slugify
 from sqlalchemy.orm import validates
 from sqlalchemy import Index
-from blog import db
+from blog.database import db
 
 class Category(db.Model):
     """Модель категории с расширенным функционалом"""

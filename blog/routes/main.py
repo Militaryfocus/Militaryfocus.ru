@@ -5,7 +5,7 @@
 from flask import Blueprint, render_template, request, current_app
 from flask_login import login_required
 from blog.models import Post, Category, Comment, User
-from blog import db
+from blog.database import db
 
 bp = Blueprint('main', __name__)
 

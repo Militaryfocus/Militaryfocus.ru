@@ -6,7 +6,7 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import JSON
-from blog import db
+from blog.database import db
 
 class User(UserMixin, db.Model):
     """Модель пользователя с расширенным функционалом"""

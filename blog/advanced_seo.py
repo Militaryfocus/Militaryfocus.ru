@@ -18,7 +18,7 @@ from urllib.parse import urljoin, urlparse
 import xml.etree.ElementTree as ET
 
 from blog.models import Post, Category, Tag, User, View
-from blog import db
+from blog.database import db
 
 class TechnicalSEOChecker:
     """Техническое SEO - проверка производительности и структуры"""

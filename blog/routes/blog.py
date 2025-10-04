@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from blog.models import Post, Category, Comment, Tag
 from blog.forms import PostForm, CommentForm
-from blog import db
+from blog.database import db
 from datetime import datetime
 
 bp = Blueprint('blog', __name__)

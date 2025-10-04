@@ -7,7 +7,7 @@ import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 from blog.models import Post, Category, Tag
-from blog import db
+from blog.database import db
 from blog.advanced_seo import advanced_seo_optimizer
 
 class AutoSEOOptimizer:

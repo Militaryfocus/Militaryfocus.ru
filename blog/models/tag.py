@@ -4,7 +4,7 @@
 
 from datetime import datetime
 from slugify import slugify
-from blog import db
+from blog.database import db
 
 class Tag(db.Model):
     """Модель тега"""

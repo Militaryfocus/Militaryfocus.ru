@@ -4,7 +4,7 @@ API для поиска с автодополнением
 
 from flask import Blueprint, request, jsonify
 from blog.models import Post, Category, User
-from blog import db
+from blog.database import db
 from sqlalchemy import or_
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')

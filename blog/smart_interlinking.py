@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import difflib
 
 from blog.models import Post, Category, Tag
-from blog import db
+from blog.database import db
 
 class ContentAnalyzer:
     """Анализатор контента для определения релевантности"""

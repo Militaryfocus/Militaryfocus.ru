@@ -5,7 +5,7 @@
 from datetime import datetime
 from sqlalchemy import JSON
 from slugify import slugify
-from blog import db
+from blog.database import db
 
 class Post(db.Model):
     """Модель поста с расширенным функционалом"""

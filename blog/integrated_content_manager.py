@@ -16,7 +16,7 @@ import uuid
 from pathlib import Path
 
 from blog.models import Post, Category, Tag, Comment, User, View
-from blog import db
+from blog.database import db
 from blog.advanced_content_generator import (
     AdvancedContentGenerator, ContentRequest, ContentType, ContentTone, 
     TargetAudience, GeneratedContent, generate_advanced_content

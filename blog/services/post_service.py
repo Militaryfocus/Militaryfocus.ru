@@ -5,7 +5,7 @@
 from typing import Optional, List
 from datetime import datetime
 from blog.models import Post, User, Category, Tag
-from blog import db
+from blog.database import db
 
 class PostService:
     """Сервис для работы с постами"""

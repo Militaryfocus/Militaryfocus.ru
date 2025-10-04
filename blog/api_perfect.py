@@ -33,8 +33,8 @@ from requests.auth import HTTPBasicAuth
 import xml.etree.ElementTree as ET
 
 from blog.models import Post, User, Category, Comment, Tag
-from blog import db
-from blog import db as database
+from blog.database import db
+from blog.database import db as database
 
 class APIVersion(Enum):
     """Версии API"""

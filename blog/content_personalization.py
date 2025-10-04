@@ -25,7 +25,7 @@ from sklearn.decomposition import PCA
 import pandas as pd
 
 from blog.models import Post, Category, Tag, Comment, User, View
-from blog import db
+from blog.database import db
 from blog.ai_provider_manager import generate_with_ai
 
 logger = logging.getLogger(__name__)

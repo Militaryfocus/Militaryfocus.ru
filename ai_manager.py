@@ -14,19 +14,21 @@ import time
 # Добавляем текущую директорию в путь
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from blog import create_app, db
-from blog.ai_content import (
+from blog import create_app
+from blog.database import db
+from blog.ai import (
     AIContentGenerator, 
     ContentScheduler, 
     populate_blog_with_ai_content,
-    start_ai_content_generation
-)
-from blog.integrated_ai_system import (
+    start_ai_content_generation,
     integrated_ai_system,
     generate_safe_content,
     batch_generate_safe_content,
     get_ai_system_status,
-    optimize_ai_system
+    optimize_ai_system,
+    ai_monitoring_dashboard,
+    research_keywords,
+    analyze_content_seo
 )
 from blog.integrated_content_manager import (
     integrated_content_manager,
@@ -38,10 +40,7 @@ from blog.integrated_content_manager import (
     get_user_content_recommendations,
     get_user_analytics
 )
-from blog.ai_provider_manager import get_ai_provider_stats, get_available_ai_models
 from blog.content_personalization import analyze_user_behavior, get_personalized_recommendations
-from blog.seo_optimization import research_keywords, analyze_content_seo
-from blog.ai_monitoring import ai_monitoring_dashboard
 from blog.models import Post, User, Category, Comment
 
 def create_sample_categories():
@@ -670,7 +669,10 @@ def main():
         elif args.command == 'ai-optimize':
             ai_optimize(args)
         elif args.command == 'ai-monitor':
-            ai_monitor(args)
+            # Показываем мониторинг AI системы
+            print("🔍 Мониторинг AI системы...")
+            dashboard = ai_monitoring_dashboard()
+            print(f"Статус: {dashboard.get('status', 'unknown')}")
         elif args.command == 'advanced-generate':
             advanced_generate(args)
         elif args.command == 'keywords':

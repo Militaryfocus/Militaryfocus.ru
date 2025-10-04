@@ -13,7 +13,7 @@ import io
 import base64
 
 from blog.models import Post, Category, Tag, View, Comment
-from blog import db
+from blog.database import db
 from blog.advanced_seo import advanced_seo_optimizer
 
 class SEOAnalytics:
