@@ -29,8 +29,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import nltk
 from textstat import flesch_reading_ease, automated_readability_index
 
-from blog.models import Post, Category, Tag, Comment, User
-from blog.database import db
+from models import Post, Category, Tag, Comment, User
+from config.database import db
 # Временные заглушки для несуществующих модулей
 class ValidationResult:
     def __init__(self, is_valid=True, score=0.8, issues=None):
@@ -47,7 +47,7 @@ class EnhancedAIContentGenerator:
 
 def track_ai_content_generation(content_type, status, metadata=None):
     pass
-from blog.monitoring import monitoring_system
+from services.monitoring import monitoring_system
 
 logger = logging.getLogger(__name__)
 

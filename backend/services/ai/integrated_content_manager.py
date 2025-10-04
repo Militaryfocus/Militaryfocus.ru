@@ -15,9 +15,9 @@ from enum import Enum
 import uuid
 from pathlib import Path
 
-from blog.models import Post, Category, Tag, Comment, User, View
-from blog.database import db
-from blog.advanced_content_generator import (
+from models import Post, Category, Tag, Comment, User, View
+from config.database import db
+from services.advanced_content_generator import (
     AdvancedContentGenerator, ContentRequest, ContentType, ContentTone, 
     TargetAudience, GeneratedContent, generate_advanced_content
 )
@@ -45,7 +45,7 @@ def generate_with_ai(prompt, model=None):
 
 def get_ai_provider_stats():
     return {"total_requests": 0, "total_tokens": 0, "total_cost": 0}
-from blog.content_personalization import (
+from services.content_personalization import (
     ContentPersonalizer, PersonalizedContentGenerator, UserBehaviorAnalyzer,
     generate_personalized_content, get_personalized_recommendations, get_user_insights
 )
@@ -92,7 +92,7 @@ def track_ai_content_generation(content_type, status, metadata=None):
 
 def ai_monitoring_dashboard():
     return {"status": "ok", "stats": {}}
-from blog.monitoring import monitoring_system
+from services.monitoring import monitoring_system
 
 logger = logging.getLogger(__name__)
 

@@ -6,9 +6,9 @@ import re
 import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-from blog.models import Post, Category, Tag
-from blog.database import db
-from blog.advanced_seo import advanced_seo_optimizer
+from models import Post, Category, Tag
+from config.database import db
+from services.advanced_seo import advanced_seo_optimizer
 
 class AutoSEOOptimizer:
     """Автоматическая SEO оптимизация"""

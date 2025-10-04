@@ -17,8 +17,8 @@ import sqlite3
 from urllib.parse import urljoin, urlparse
 import xml.etree.ElementTree as ET
 
-from blog.models import Post, Category, Tag, User, View
-from blog.database import db
+from models import Post, Category, Tag, User, View
+from config.database import db
 
 class TechnicalSEOChecker:
     """Техническое SEO - проверка производительности и структуры"""
@@ -427,7 +427,7 @@ class AdvancedSEOOptimizer:
         self.monitoring = SEOMonitoring()
         
         # Импорт базовых компонентов
-        # from blog.seo_optimizer import SEOAnalyzer, MetaTagGenerator, StructuredDataGenerator  # Циклический импорт
+        # from services.seo_optimizer import SEOAnalyzer, MetaTagGenerator, StructuredDataGenerator  # Циклический импорт
         
         # Создаем заглушки для избежания циклического импорта
         class SEOAnalyzer:

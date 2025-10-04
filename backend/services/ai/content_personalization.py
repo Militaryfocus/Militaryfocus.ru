@@ -24,8 +24,8 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 import pandas as pd
 
-from blog.models import Post, Category, Tag, Comment, User, View
-from blog.database import db
+from models import Post, Category, Tag, Comment, User, View
+from config.database import db
 # Временная заглушка для AI provider
 def generate_with_ai(prompt, model=None):
     return "Generated personalized content"

@@ -12,9 +12,9 @@ import matplotlib.pyplot as plt
 import io
 import base64
 
-from blog.models import Post, Category, Tag, View, Comment
-from blog.database import db
-from blog.advanced_seo import advanced_seo_optimizer
+from models import Post, Category, Tag, View, Comment
+from config.database import db
+from services.advanced_seo import advanced_seo_optimizer
 
 class SEOAnalytics:
     """SEO аналитика и отчеты"""

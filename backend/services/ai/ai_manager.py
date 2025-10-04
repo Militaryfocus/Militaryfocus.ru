@@ -14,9 +14,9 @@ import time
 # Добавляем текущую директорию в путь
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from blog import create_app
-from blog.database import db
-from blog.ai import (
+from . import create_app
+from config.database import db
+from services.ai import (
     AIContentGenerator, 
     ContentScheduler, 
     populate_blog_with_ai_content,
@@ -30,7 +30,7 @@ from blog.ai import (
     research_keywords,
     analyze_content_seo
 )
-from blog.integrated_content_manager import (
+from services.integrated_content_manager import (
     integrated_content_manager,
     create_content,
     batch_create_content,
@@ -40,8 +40,8 @@ from blog.integrated_content_manager import (
     get_user_content_recommendations,
     get_user_analytics
 )
-from blog.content_personalization import analyze_user_behavior, get_personalized_recommendations
-from blog.models import Post, User, Category, Comment
+from services.content_personalization import analyze_user_behavior, get_personalized_recommendations
+from models import Post, User, Category, Comment
 
 def create_sample_categories():
     """Создание примерных категорий"""
@@ -320,7 +320,7 @@ def advanced_generate(args):
         # Создаем запросы на генерацию
         requests = []
         for i in range(args.count):
-            from blog.integrated_content_manager import ContentCreationRequest, ContentWorkflow
+            from services.integrated_content_manager import ContentCreationRequest, ContentWorkflow
             
             workflow = ContentWorkflow.SEO_OPTIMIZED_GENERATION if args.seo else ContentWorkflow.AI_GENERATION
             
