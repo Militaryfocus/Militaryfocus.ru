@@ -126,6 +126,59 @@ def bookmarks():
     # Здесь можно добавить модель Bookmark
     return render_template('blog/bookmarks.html', title='Мои закладки')
 
+@bp.route('/popular')
+def popular():
+    """Популярные посты"""
+    page = request.args.get('page', 1, type=int)
+    
+    # Получаем популярные посты с пагинацией
+    posts = Post.query.filter_by(is_published=True)\
+        .order_by(Post.views_count.desc())\
+        .paginate(
+            page=page,
+            per_page=current_app.config['POSTS_PER_PAGE'],
+            error_out=False
+        )
+    
+    return render_template('blog/popular.html', 
+                         title='Популярные посты',
+                         posts=posts)
+
+@bp.route('/recent')
+def recent():
+    """Свежие посты"""
+    page = request.args.get('page', 1, type=int)
+    
+    # Получаем свежие посты с пагинацией
+    posts = Post.query.filter_by(is_published=True)\
+        .order_by(Post.created_at.desc())\
+        .paginate(
+            page=page,
+            per_page=current_app.config['POSTS_PER_PAGE'],
+            error_out=False
+        )
+    
+    return render_template('blog/recent.html', 
+                         title='Свежие посты',
+                         posts=posts)
+
+@bp.route('/tags')
+def tags():
+    """Все теги"""
+    from blog.models_perfect import Tag
+    tags = Tag.query.all()
+    return render_template('blog/tags.html', 
+                         title='Все теги',
+                         tags=tags)
+
+@bp.route('/authors')
+def authors():
+    """Авторы"""
+    authors = User.query.filter_by(is_active=True).all()
+    return render_template('blog/authors.html', 
+                         title='Авторы',
+                         authors=authors)
+
 @bp.route('/history')
 @login_required
 def history():

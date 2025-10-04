@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">{{ title }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex align-items-center mb-4">
+                <div class="me-3">
+                    <i class="fas fa-users fa-2x text-info"></i>
+                </div>
+                <div>
+                    <h1 class="h2 mb-0">{{ title }}</h1>
+                    <p class="text-muted mb-0">Авторы блога и их посты</p>
+                </div>
+            </div>
+
+            <!-- Authors List -->
+            {% if authors %}
+                <div class="row">
+                    {% for author in authors %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 author-card">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="author-avatar me-3">
+                                        {% if author.avatar %}
+                                        <img src="{{ author.avatar }}" class="rounded-circle" alt="{{ author.get_full_name() }}" style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
+                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-user text-white fa-lg"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title mb-1">{{ author.get_full_name() }}</h5>
+                                        <small class="text-muted">@{{ author.username }}</small>
+                                    </div>
+                                </div>
+                                
+                                {% if author.bio %}
+                                <p class="card-text text-muted mb-3">{{ author.bio[:100] + '...' if author.bio|length > 100 else author.bio }}</p>
+                                {% endif %}
+                                
+                                <div class="mt-auto">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <div class="stat-item">
+                                                <div class="stat-number text-primary">{{ author.posts_count }}</div>
+                                                <div class="stat-label">Постов</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="stat-item">
+                                                <div class="stat-number text-success">{{ author.comments_count }}</div>
+                                                <div class="stat-label">Комментариев</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="stat-item">
+                                                <div class="stat-number text-info">{{ author.views_count }}</div>
+                                                <div class="stat-label">Просмотров</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <a href="{{ url_for('blog.author_posts', username=author.username) }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye me-1"></i>Посмотреть посты
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">Авторов пока нет</h3>
+                    <p class="text-muted">Станьте первым автором блога!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top sidebar-container" style="top: 100px;">
+                <!-- Stats Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar text-primary me-2"></i>Статистика
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <div class="stat-number text-primary">{{ authors|length }}</div>
+                                    <div class="stat-label">Авторов</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <div class="stat-number text-success">{{ authors|sum(attribute='posts_count') if authors else 0 }}</div>
+                                    <div class="stat-label">Постов</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <div class="stat-number text-info">{{ authors|sum(attribute='comments_count') if authors else 0 }}</div>
+                                    <div class="stat-label">Комментариев</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bolt text-warning me-2"></i>Быстрые действия
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('main.recent') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-clock me-2"></i>Свежие посты
+                            </a>
+                            <a href="{{ url_for('main.popular') }}" class="btn btn-outline-success">
+                                <i class="fas fa-fire me-2"></i>Популярные посты
+                            </a>
+                            <a href="{{ url_for('main.tags') }}" class="btn btn-outline-info">
+                                <i class="fas fa-tags me-2"></i>Все теги
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.stat-item {
+    padding: 0.5rem;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.author-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.author-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.author-avatar img {
+    border: 3px solid #e9ecef;
+}
+</style>
+{% endblock %}

@@ -196,3 +196,23 @@ def delete_post(slug):
     db.session.commit()
     flash('Пост удален успешно!', 'success')
     return redirect(url_for('main.index'))
+
+@bp.route('/author/<username>')
+def author_posts(username):
+    """Посты конкретного автора"""
+    author = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    
+    # Получаем посты автора с пагинацией
+    posts = Post.query.filter_by(author_id=author.id, is_published=True)\
+        .order_by(Post.created_at.desc())\
+        .paginate(
+            page=page,
+            per_page=current_app.config['POSTS_PER_PAGE'],
+            error_out=False
+        )
+    
+    return render_template('blog/author_posts.html',
+                         title=f'Посты автора {author.get_full_name()}',
+                         author=author,
+                         posts=posts)

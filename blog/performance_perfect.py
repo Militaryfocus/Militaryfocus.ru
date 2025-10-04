@@ -33,7 +33,7 @@ from sqlalchemy.pool import QueuePool
 from flask import request, g, current_app
 from werkzeug.cache import SimpleCache
 try:
-    from werkzeug.contrib.cache import MemcachedCache, RedisCache
+    from werkzeug.cache import MemcachedCache, RedisCache
 except ImportError:
     # Fallback для новых версий Werkzeug
     MemcachedCache = None

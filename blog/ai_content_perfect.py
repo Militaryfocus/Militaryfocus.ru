@@ -480,7 +480,8 @@ class AIProviderManager:
                 start_time = time.time()
                 
                 try:
-                    response = await self.client.chat.completions.create(
+                    response = await asyncio.to_thread(
+                        self.client.chat.completions.create,
                         model=AIConfig.PROVIDERS[AIProvider.OPENAI]['default_model'],
                         messages=[{"role": "user", "content": request.prompt}],
                         max_tokens=request.max_tokens,
@@ -517,7 +518,8 @@ class AIProviderManager:
                 start_time = time.time()
                 
                 try:
-                    response = await self.client.messages.create(
+                    response = await asyncio.to_thread(
+                        self.client.messages.create,
                         model=AIConfig.PROVIDERS[AIProvider.ANTHROPIC]['default_model'],
                         max_tokens=request.max_tokens,
                         temperature=request.temperature,
@@ -554,7 +556,8 @@ class AIProviderManager:
                 start_time = time.time()
                 
                 try:
-                    response = await self.model.generate_content_async(
+                    response = await asyncio.to_thread(
+                        self.model.generate_content,
                         request.prompt,
                         generation_config=genai.types.GenerationConfig(
                             max_output_tokens=request.max_tokens,
@@ -680,7 +683,8 @@ class AIProviderManager:
                     if self.pipeline is None:
                         content = f"Generated content for: {request.prompt[:100]}..."
                     else:
-                        result = self.pipeline(
+                        result = await asyncio.to_thread(
+                            self.pipeline,
                             request.prompt,
                             max_length=request.max_tokens,
                             temperature=request.temperature,

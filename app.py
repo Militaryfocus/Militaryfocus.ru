@@ -60,7 +60,7 @@ if __name__ == '__main__':
         try:
             from blog.fault_tolerance_perfect import init_fault_tolerance
             from blog.monitoring import monitoring_system
-            from blog.seo_optimizer import seo_optimizer
+            from blog.auto_seo_optimizer import AutoSEOOptimizer
             
             # Запуск системы отказоустойчивости
             init_fault_tolerance()
@@ -71,6 +71,7 @@ if __name__ == '__main__':
             logger.info("✅ Система мониторинга запущена")
             
             # Обновление SEO файлов
+            seo_optimizer = AutoSEOOptimizer()
             seo_optimizer.update_all_seo()
             logger.info("✅ SEO файлы обновлены")
             

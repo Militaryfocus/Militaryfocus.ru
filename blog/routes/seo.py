@@ -229,7 +229,8 @@ def update_sitemap():
         return redirect(url_for('main.index'))
     
     try:
-        from blog.seo_optimizer import seo_optimizer
+        from blog.auto_seo_optimizer import AutoSEOOptimizer
+        seo_optimizer = AutoSEOOptimizer()
         seo_optimizer.update_all_seo()
         flash('Sitemap и robots.txt обновлены успешно!', 'success')
     except Exception as e:
