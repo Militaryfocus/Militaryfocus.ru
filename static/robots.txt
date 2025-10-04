@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: http://localhost:5000/static/sitemap.xml
+Sitemap: https://militaryfocus.ru/static/sitemap.xml
 
 # Запрещенные директории
 Disallow: /admin/
