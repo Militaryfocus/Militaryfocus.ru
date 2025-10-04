@@ -1,0 +1,113 @@
+{% extends "install/base.html" %}
+
+{% block title %}Шаг 2: База данных - Установка{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-database"></i> Шаг 2: Настройка базы данных</h2>
+
+<form method="POST" id="databaseForm">
+    <div class="mb-4">
+        <label for="db_type" class="form-label">Тип базы данных</label>
+        <select class="form-select" id="db_type" name="db_type" onchange="toggleDatabaseFields()">
+            <option value="sqlite" selected>SQLite (рекомендуется для начала)</option>
+            <option value="postgresql">PostgreSQL</option>
+            <option value="mysql">MySQL/MariaDB</option>
+        </select>
+    </div>
+    
+    <div id="sqliteInfo" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> 
+        <strong>SQLite</strong> - отличный выбор для начала. База данных будет создана автоматически.
+        Не требует дополнительной настройки.
+    </div>
+    
+    <div id="databaseFields" style="display: none;">
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <label for="db_host" class="form-label">Хост</label>
+                <input type="text" class="form-control" id="db_host" name="db_host" value="localhost">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="db_port" class="form-label">Порт</label>
+                <input type="text" class="form-control" id="db_port" name="db_port" value="5432">
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="db_name" class="form-label">Название базы данных</label>
+            <input type="text" class="form-control" id="db_name" name="db_name" placeholder="blog_db">
+            <small class="form-text text-muted">База данных должна быть создана заранее</small>
+        </div>
+        
+        <div class="mb-3">
+            <label for="db_user" class="form-label">Имя пользователя</label>
+            <input type="text" class="form-control" id="db_user" name="db_user" placeholder="db_user">
+        </div>
+        
+        <div class="mb-3">
+            <label for="db_password" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="db_password" name="db_password">
+        </div>
+        
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i> 
+            <strong>Важно:</strong> Убедитесь, что база данных создана и пользователь имеет все необходимые права.
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('step1') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+        <button type="submit" class="btn btn-primary">
+            Далее <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</form>
+
+<script>
+function toggleDatabaseFields() {
+    const dbType = document.getElementById('db_type').value;
+    const sqliteInfo = document.getElementById('sqliteInfo');
+    const databaseFields = document.getElementById('databaseFields');
+    const dbPort = document.getElementById('db_port');
+    
+    if (dbType === 'sqlite') {
+        sqliteInfo.style.display = 'block';
+        databaseFields.style.display = 'none';
+        
+        // Очищаем обязательность полей
+        document.getElementById('db_name').removeAttribute('required');
+        document.getElementById('db_user').removeAttribute('required');
+        document.getElementById('db_password').removeAttribute('required');
+    } else {
+        sqliteInfo.style.display = 'none';
+        databaseFields.style.display = 'block';
+        
+        // Устанавливаем порт по умолчанию
+        dbPort.value = dbType === 'postgresql' ? '5432' : '3306';
+        
+        // Делаем поля обязательными
+        document.getElementById('db_name').setAttribute('required', 'required');
+        document.getElementById('db_user').setAttribute('required', 'required');
+        document.getElementById('db_password').setAttribute('required', 'required');
+    }
+}
+
+document.getElementById('databaseForm').addEventListener('submit', function(e) {
+    const dbType = document.getElementById('db_type').value;
+    
+    if (dbType !== 'sqlite') {
+        const dbName = document.getElementById('db_name').value;
+        const dbUser = document.getElementById('db_user').value;
+        const dbPassword = document.getElementById('db_password').value;
+        
+        if (!dbName || !dbUser || !dbPassword) {
+            e.preventDefault();
+            alert('Пожалуйста, заполните все поля для базы данных');
+            return false;
+        }
+    }
+});
+</script>
+{% endblock %}

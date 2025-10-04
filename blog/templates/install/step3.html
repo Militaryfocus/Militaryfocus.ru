@@ -1,0 +1,136 @@
+{% extends "install/base.html" %}
+
+{% block title %}Шаг 3: Администратор - Установка{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-user-shield"></i> Шаг 3: Создание администратора</h2>
+
+<form method="POST" id="adminForm">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="admin_username" class="form-label">Имя пользователя</label>
+            <input type="text" class="form-control" id="admin_username" name="admin_username" 
+                   required pattern="[a-zA-Z0-9_]{3,20}" placeholder="admin">
+            <small class="form-text text-muted">Только латинские буквы, цифры и _ (3-20 символов)</small>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label for="admin_email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="admin_email" name="admin_email" 
+                   required placeholder="admin@example.com">
+            <small class="form-text text-muted">Используется для уведомлений и восстановления пароля</small>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="admin_password" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="admin_password" name="admin_password" 
+                   required minlength="8" onkeyup="checkPasswordStrength()">
+            <small class="form-text text-muted">Минимум 8 символов</small>
+            <div class="progress mt-2" style="height: 5px;">
+                <div id="passwordStrength" class="progress-bar" role="progressbar"></div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label for="admin_password_confirm" class="form-label">Подтвердите пароль</label>
+            <input type="password" class="form-control" id="admin_password_confirm" 
+                   name="admin_password_confirm" required minlength="8">
+            <div id="passwordMatch" class="invalid-feedback">
+                Пароли не совпадают
+            </div>
+        </div>
+    </div>
+    
+    <hr class="my-4">
+    
+    <h5 class="mb-3">Дополнительная информация (опционально)</h5>
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="first_name" class="form-label">Имя</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Иван">
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label for="last_name" class="form-label">Фамилия</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Иванов">
+        </div>
+    </div>
+    
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> 
+        <strong>Важно:</strong> Запомните эти данные! Они понадобятся для входа в систему.
+    </div>
+    
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('step2') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+        <button type="submit" class="btn btn-primary">
+            Далее <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</form>
+
+<script>
+function checkPasswordStrength() {
+    const password = document.getElementById('admin_password').value;
+    const strengthBar = document.getElementById('passwordStrength');
+    
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (password.length >= 12) strength += 25;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 12.5;
+    if (/[^a-zA-Z0-9]/.test(password)) strength += 12.5;
+    
+    strengthBar.style.width = strength + '%';
+    
+    if (strength <= 25) {
+        strengthBar.className = 'progress-bar bg-danger';
+    } else if (strength <= 50) {
+        strengthBar.className = 'progress-bar bg-warning';
+    } else if (strength <= 75) {
+        strengthBar.className = 'progress-bar bg-info';
+    } else {
+        strengthBar.className = 'progress-bar bg-success';
+    }
+}
+
+document.getElementById('adminForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('admin_password').value;
+    const confirmPassword = document.getElementById('admin_password_confirm').value;
+    const passwordMatch = document.getElementById('passwordMatch');
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        document.getElementById('admin_password_confirm').classList.add('is-invalid');
+        passwordMatch.style.display = 'block';
+        return false;
+    }
+    
+    if (password.length < 8) {
+        e.preventDefault();
+        alert('Пароль должен содержать минимум 8 символов');
+        return false;
+    }
+});
+
+document.getElementById('admin_password_confirm').addEventListener('input', function() {
+    const password = document.getElementById('admin_password').value;
+    const confirmPassword = this.value;
+    
+    if (password === confirmPassword) {
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+        document.getElementById('passwordMatch').style.display = 'none';
+    } else {
+        this.classList.remove('is-valid');
+        this.classList.add('is-invalid');
+        document.getElementById('passwordMatch').style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

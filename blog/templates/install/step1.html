@@ -1,0 +1,69 @@
+{% extends "install/base.html" %}
+
+{% block title %}Шаг 1: Основные настройки - Установка{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-cog"></i> Шаг 1: Основные настройки</h2>
+
+<form method="POST" id="settingsForm">
+    <div class="mb-4">
+        <label for="site_name" class="form-label">Название сайта</label>
+        <input type="text" class="form-control" id="site_name" name="site_name" 
+               value="Military Focus Blog" required>
+        <small class="form-text text-muted">Название вашего блога</small>
+    </div>
+    
+    <div class="mb-4">
+        <label for="site_url" class="form-label">URL сайта</label>
+        <input type="url" class="form-control" id="site_url" name="site_url" 
+               placeholder="https://example.com" required>
+        <small class="form-text text-muted">Полный URL вашего сайта (без / в конце)</small>
+    </div>
+    
+    <div class="mb-4">
+        <label for="site_description" class="form-label">Описание сайта</label>
+        <textarea class="form-control" id="site_description" name="site_description" 
+                  rows="3" placeholder="Современный блог о...">Современная система управления блогом с ИИ-поддержкой</textarea>
+        <small class="form-text text-muted">Краткое описание для SEO</small>
+    </div>
+    
+    <div class="mb-4">
+        <label for="environment" class="form-label">Окружение</label>
+        <select class="form-select" id="environment" name="environment">
+            <option value="production">Production (рабочий сайт)</option>
+            <option value="development">Development (разработка)</option>
+        </select>
+        <small class="form-text text-muted">Выберите production для рабочего сайта</small>
+    </div>
+    
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> 
+        <strong>Совет:</strong> Эти настройки можно будет изменить позже в файле .env
+    </div>
+    
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+        <button type="submit" class="btn btn-primary">
+            Далее <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</form>
+
+<script>
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    const siteUrl = document.getElementById('site_url').value;
+    if (!siteUrl.startsWith('http://') && !siteUrl.startsWith('https://')) {
+        e.preventDefault();
+        alert('URL должен начинаться с http:// или https://');
+        return false;
+    }
+    if (siteUrl.endsWith('/')) {
+        e.preventDefault();
+        alert('URL не должен заканчиваться на /');
+        return false;
+    }
+});
+</script>
+{% endblock %}
