@@ -1,0 +1,398 @@
+<!-- Современная навигация -->
+<nav class="navbar navbar-expand-lg modern-navbar fixed-top">
+    <div class="container">
+        <!-- Логотип -->
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">
+            <i class="fas fa-rocket me-2"></i>
+            Military Focus
+        </a>
+        
+        <!-- Мобильное меню -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Основное меню -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('blog.post_list') }}">
+                        <i class="fas fa-newspaper me-1"></i>
+                        Статьи
+                    </a>
+                </li>
+                
+                <!-- Dropdown категорий -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-folder me-1"></i>
+                        Категории
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-modern">
+                        {% for category in categories %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('blog.category_posts', slug=category.slug) }}">
+                                <span class="category-dot" style="background: {{ category.color }}"></span>
+                                {{ category.name }}
+                                <span class="badge bg-secondary ms-auto">{{ category.posts.count() }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.about') }}">
+                        <i class="fas fa-info-circle me-1"></i>
+                        О нас
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Поиск -->
+            <form class="d-flex me-3" action="{{ url_for('main.search') }}" method="get">
+                <div class="search-box">
+                    <input class="form-control search-input" type="search" name="q" 
+                           placeholder="Поиск..." aria-label="Search">
+                    <button class="search-btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Правое меню -->
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                <!-- Уведомления -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                        {% if unread_notifications > 0 %}
+                        <span class="notification-badge">{{ unread_notifications }}</span>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
+                        <li class="dropdown-header">
+                            <strong>Уведомления</strong>
+                            {% if notifications %}
+                            <a href="#" class="float-end small">Отметить все как прочитанные</a>
+                            {% endif %}
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% if notifications %}
+                            {% for notification in notifications[:5] %}
+                            <li>
+                                <a class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}" 
+                                   href="{{ notification.link }}">
+                                    <div class="d-flex">
+                                        <div class="notification-icon me-3">
+                                            <i class="fas fa-{{ notification.icon|default('info-circle') }}"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">{{ notification.title }}</h6>
+                                            <p class="mb-0 small text-muted">{{ notification.message }}</p>
+                                            <small class="text-muted">{{ notification.created_at|timeago }}</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            {% endfor %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-center" href="{{ url_for('main.notifications') }}">
+                                    Все уведомления
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="p-3 text-center text-muted">
+                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                Нет новых уведомлений
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                
+                <!-- Профиль -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="{{ current_user.avatar or '/static/images/default-avatar.png' }}" 
+                             alt="{{ current_user.username }}" class="user-avatar me-2">
+                        <span class="d-none d-lg-inline">{{ current_user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
+                        <li class="dropdown-header">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ current_user.avatar or '/static/images/default-avatar.png' }}" 
+                                     alt="{{ current_user.username }}" class="user-avatar-large me-3">
+                                <div>
+                                    <h6 class="mb-0">{{ current_user.username }}</h6>
+                                    <small class="text-muted">{{ current_user.email }}</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('blog.my_posts') }}">
+                                <i class="fas fa-newspaper me-2"></i>
+                                Мои статьи
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('author_stats.dashboard') }}">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Статистика
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('main.profile') }}">
+                                <i class="fas fa-user-cog me-2"></i>
+                                Настройки
+                            </a>
+                        </li>
+                        {% if current_user.is_admin %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('blog_admin.dashboard') }}">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Админ-панель
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                Выйти
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <!-- Кнопки входа/регистрации -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">
+                        <i class="fas fa-sign-in-alt me-1"></i>
+                        Войти
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary btn-sm nav-register" href="{{ url_for('auth.register') }}">
+                        <i class="fas fa-user-plus me-1"></i>
+                        Регистрация
+                    </a>
+                </li>
+                {% endif %}
+                
+                <!-- Переключатель темы -->
+                <li class="nav-item d-flex align-items-center ms-3">
+                    <div class="theme-switch-wrapper">
+                        <label class="theme-switch" for="theme-switch">
+                            <input type="checkbox" id="theme-switch">
+                            <div class="slider round"></div>
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+/* Современные стили навигации */
+.modern-navbar {
+    padding: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.modern-navbar.scrolled {
+    padding: 0.5rem 0;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #4a5568;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* Поиск */
+.search-box {
+    position: relative;
+    width: 250px;
+}
+
+.search-input {
+    padding-right: 40px;
+    border-radius: 25px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+/* Dropdown современный */
+.dropdown-menu-modern {
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 0.5rem 0;
+    min-width: 250px;
+}
+
+.dropdown-item {
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-item:hover {
+    background: #f8fafc;
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.category-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+/* Уведомления */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.notification-dropdown {
+    width: 350px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.unread {
+    background: #f0f9ff;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    background: #e0e7ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+}
+
+/* Профиль */
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-avatar-large {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-dropdown {
+    width: 280px;
+}
+
+/* Кнопка регистрации */
+.nav-register {
+    background: var(--gradient-primary);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.nav-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* Мобильная адаптация */
+@media (max-width: 991px) {
+    .search-box {
+        width: 100%;
+        margin: 1rem 0;
+    }
+    
+    .navbar-nav {
+        padding: 1rem 0;
+    }
+    
+    .nav-link::after {
+        display: none;
+    }
+    
+    .theme-switch-wrapper {
+        margin: 1rem 0;
+    }
+}
+</style>
