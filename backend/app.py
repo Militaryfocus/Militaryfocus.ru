@@ -37,6 +37,7 @@ def create_app(config_class=Config):
     
     # Регистрация blueprints
     from api import auth, posts, users, categories, comments, tags, uploads
+    from api import author_stats, feeds, export
     
     app.register_blueprint(auth.bp, url_prefix='/api/v1/auth')
     app.register_blueprint(posts.bp, url_prefix='/api/v1/posts')
@@ -45,15 +46,32 @@ def create_app(config_class=Config):
     app.register_blueprint(comments.bp, url_prefix='/api/v1/comments')
     app.register_blueprint(tags.bp, url_prefix='/api/v1/tags')
     app.register_blueprint(uploads.bp, url_prefix='/api/v1/uploads')
+    app.register_blueprint(author_stats.bp, url_prefix='/api/v1/author')
+    app.register_blueprint(feeds.bp, url_prefix='/api/v1/feeds')
+    app.register_blueprint(export.bp, url_prefix='/api/v1/export')
     
     # Обработчики ошибок
     from api.errors import register_error_handlers
     register_error_handlers(app)
     
+    # Инициализация сервисов
+    from services_init import init_services
+    init_services(app)
+    
+    # Инициализация форм
+    from forms import csrf
+    csrf.init_app(app)
+    
     # Здоровье API
     @app.route('/api/v1/health')
     def health_check():
         return {'status': 'healthy', 'version': '1.0.0'}
+    
+    # Маршрут установки
+    @app.route('/install')
+    def install():
+        from install import install_app
+        return install_app()
     
     return app
 
