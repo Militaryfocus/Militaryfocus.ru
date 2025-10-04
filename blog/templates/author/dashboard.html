@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Панель автора - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Панель автора</h1>
+    
+    <!-- Основная статистика -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ posts_count }}</h3>
+                    <p class="mb-0">Всего постов</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">{{ published_posts }}</h3>
+                    <p class="mb-0">Опубликовано</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-warning">{{ draft_posts }}</h3>
+                    <p class="mb-0">Черновиков</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-info">{{ total_views }}</h3>
+                    <p class="mb-0">Просмотров</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Дополнительная статистика -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-comments fa-2x text-primary me-3"></i>
+                    <div>
+                        <h5 class="mb-0">{{ comments_count }}</h5>
+                        <small class="text-muted">Комментариев</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-heart fa-2x text-danger me-3"></i>
+                    <div>
+                        <h5 class="mb-0">{{ likes_count }}</h5>
+                        <small class="text-muted">Лайков</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-bookmark fa-2x text-warning me-3"></i>
+                    <div>
+                        <h5 class="mb-0">{{ bookmarks_count }}</h5>
+                        <small class="text-muted">В закладках</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- График просмотров -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Просмотры за последние 30 дней</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="viewsChart" height="100"></canvas>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Популярные посты -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Популярные посты</h5>
+                </div>
+                <div class="card-body">
+                    {% if popular_posts %}
+                        <div class="list-group list-group-flush">
+                            {% for post in popular_posts %}
+                            <a href="{{ url_for('author_stats.post_analytics', post_id=post.id) }}" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ post.title|truncate(50) }}</h6>
+                                    <small>{{ post.views }} просмотров</small>
+                                </div>
+                                <small class="text-muted">{{ post.created_at.strftime('%d.%m.%Y') }}</small>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Нет опубликованных постов</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Последние комментарии -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Последние комментарии</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_comments %}
+                        <div class="list-group list-group-flush">
+                            {% for comment in recent_comments %}
+                            <a href="{{ url_for('blog.post_detail', slug=comment.post.slug) }}#comment-{{ comment.id }}" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <strong>{{ comment.author.username }}</strong>
+                                    <small>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                                </div>
+                                <p class="mb-1">{{ comment.content|truncate(100) }}</p>
+                                <small class="text-muted">к посту "{{ comment.post.title|truncate(30) }}"</small>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Нет комментариев</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Быстрые действия -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Быстрые действия</h5>
+        </div>
+        <div class="card-body">
+            <a href="{{ url_for('blog.create_post') }}" class="btn btn-primary me-2 mb-2">
+                <i class="fas fa-plus"></i> Новый пост
+            </a>
+            <a href="{{ url_for('blog.my_posts') }}" class="btn btn-secondary me-2 mb-2">
+                <i class="fas fa-list"></i> Мои посты
+            </a>
+            <a href="{{ url_for('blog.my_drafts') }}" class="btn btn-warning me-2 mb-2">
+                <i class="fas fa-edit"></i> Черновики
+            </a>
+            <a href="{{ url_for('author_stats.earnings') }}" class="btn btn-success mb-2">
+                <i class="fas fa-dollar-sign"></i> Доходы
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// График просмотров
+const ctx = document.getElementById('viewsChart').getContext('2d');
+const viewsData = {{ daily_views|tojson }};
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: viewsData.map(d => d.date),
+        datasets: [{
+            label: 'Просмотры',
+            data: viewsData.map(d => d.views),
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// Поддержка темной темы для графика
+window.addEventListener('themeChanged', function(e) {
+    const isDark = e.detail.theme === 'dark';
+    Chart.defaults.color = isDark ? '#e0e0e0' : '#666';
+    Chart.defaults.borderColor = isDark ? '#404040' : 'rgba(0,0,0,0.1)';
+});
+</script>
+{% endblock %}
