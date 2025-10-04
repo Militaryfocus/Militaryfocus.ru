@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import io
 import base64
 
-from blog.models import Post, Category, Tag, View, Comment
+from blog.models_perfect import Post, Category, Tag, View, Comment
 from blog import db
 from blog.advanced_seo import advanced_seo_optimizer
 

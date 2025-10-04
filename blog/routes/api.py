@@ -3,7 +3,7 @@ API для поиска с автодополнением
 """
 
 from flask import Blueprint, request, jsonify
-from blog.models import Post, Category, User
+from blog.models_perfect import Post, Category, User
 from blog import db
 from sqlalchemy import or_
 

@@ -4,7 +4,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
-from blog.models import User, Post, Category, Comment, Tag
+from blog.models_perfect import User, Post, Category, Comment, Tag
 from blog.forms import CategoryForm
 from blog import db
 from functools import wraps

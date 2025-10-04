@@ -31,7 +31,7 @@ from sqlalchemy.pool import QueuePool
 # import kubernetes  # Необязательный импорт
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 
-from blog.models import db
+from blog import db
 from blog import db as database
 
 class HealthStatus(Enum):

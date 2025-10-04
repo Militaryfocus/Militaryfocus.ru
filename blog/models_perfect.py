@@ -324,11 +324,11 @@ class Post(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), index=True)
     
     # Связи
-    comments = db.relationship('Comment', backref='post', lazy='dynamic', cascade='all, delete-orphan')
+    comments = db.relationship('Comment', backref='comment_post', lazy='dynamic', cascade='all, delete-orphan')
     tags = db.relationship('Tag', secondary='post_tags', backref='posts')
-    bookmarks = db.relationship('Bookmark', backref='post', lazy='dynamic', cascade='all, delete-orphan')
-    likes = db.relationship('PostLike', backref='post', lazy='dynamic', cascade='all, delete-orphan')
-    views = db.relationship('View', backref='post', lazy='dynamic', cascade='all, delete-orphan')
+    bookmarks = db.relationship('Bookmark', backref='bookmark_post', lazy='dynamic', cascade='all, delete-orphan')
+    likes = db.relationship('PostLike', backref='like_post', lazy='dynamic', cascade='all, delete-orphan')
+    views = db.relationship('View', backref='view_post', lazy='dynamic', cascade='all, delete-orphan')
     
     # Индексы
     __table_args__ = (
@@ -417,6 +417,8 @@ class Post(db.Model):
     
     def _calculate_reading_time(self):
         """Расчет времени чтения"""
+        if not self.content:
+            return 1
         words_count = len(re.sub(r'<[^>]+>', '', self.content).split())
         return max(1, words_count // 200)  # 200 слов в минуту
     
@@ -744,8 +746,8 @@ class View(db.Model):
     duration = db.Column(db.Integer, default=0)  # В секундах
     
     # Связи
-    post = db.relationship('Post', backref=db.backref('views', lazy=True))
-    user = db.relationship('User', backref=db.backref('views', lazy=True))
+    post = db.relationship('Post', backref=db.backref('post_views', lazy=True))
+    user = db.relationship('User', backref=db.backref('user_views', lazy=True))
     
     # Индексы
     __table_args__ = (
@@ -838,7 +840,7 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     
     # Связи
-    user = db.relationship('User', backref=db.backref('notifications', lazy=True))
+    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True))
     
     # Индексы
     __table_args__ = (
@@ -880,7 +882,7 @@ class UserSession(db.Model):
     expires_at = db.Column(db.DateTime, nullable=True)
     
     # Связи
-    user = db.relationship('User', backref=db.backref('sessions', lazy=True))
+    user = db.relationship('User', backref=db.backref('user_sessions', lazy=True))
     
     # Индексы
     __table_args__ = (

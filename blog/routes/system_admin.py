@@ -8,11 +8,11 @@ from functools import wraps
 import json
 from datetime import datetime
 
-from blog.fault_tolerance import fault_tolerant_system
-from blog.seo_optimizer import seo_optimizer
-from blog.smart_interlinking import smart_interlinking
-from blog.monitoring import monitoring_system
-from blog.models import Post, Category
+from blog.fault_tolerance_perfect import perfect_fault_tolerance_system
+from blog.auto_seo_optimizer import AutoSEOOptimizer
+from blog.smart_interlinking import SmartInterlinkingSystem
+from blog.monitoring import MonitoringSystem
+from blog.models_perfect import Post, Category
 from blog import db
 
 bp = Blueprint('system_admin', __name__)

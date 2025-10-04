@@ -32,7 +32,8 @@ import jieba
 from transformers import pipeline, AutoTokenizer, AutoModel
 import torch
 
-from blog.models import Post, Category, Tag, User, db
+from blog.models_perfect import Post, Category, Tag, User
+from blog import db
 from blog import db as database
 
 # Загрузка NLTK данных

@@ -35,7 +35,8 @@ from werkzeug.contrib.cache import SimpleCache, MemcachedCache, RedisCache
 import memcached
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 
-from blog.models import Post, User, Category, Comment, Tag, db
+from blog.models_perfect import Post, User, Category, Comment, Tag
+from blog import db
 from blog import db as database
 
 class CacheType(Enum):

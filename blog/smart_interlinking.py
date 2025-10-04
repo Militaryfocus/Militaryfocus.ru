@@ -11,7 +11,7 @@ from collections import defaultdict, Counter
 from datetime import datetime, timedelta
 import difflib
 
-from blog.models import Post, Category, Tag
+from blog.models_perfect import Post, Category, Tag
 from blog import db
 
 class ContentAnalyzer:

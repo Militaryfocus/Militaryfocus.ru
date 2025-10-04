@@ -4,8 +4,8 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from blog.models import Post, Category, User, Comment
-from blog.ai_content import AIContentGenerator, ContentScheduler, populate_blog_with_ai_content
+from blog.models_perfect import Post, Category, User, Comment
+from blog.ai_content_perfect import PerfectAIContentGenerator, ContentScheduler, populate_blog_with_ai_content
 from blog import db
 from functools import wraps
 import threading

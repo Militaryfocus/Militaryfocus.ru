@@ -14,7 +14,7 @@ from collections import defaultdict, deque
 import threading
 from functools import wraps
 
-from blog.models import Post, User, Comment
+from blog.models_perfect import Post, User, Comment
 from blog import db
 
 class SystemMonitor:
