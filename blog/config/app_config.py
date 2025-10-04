@@ -43,8 +43,13 @@ class AppConfig:
         migrate.init_app(app, db)
         
         # Инициализация безопасных заголовков
-        from blog.security_perfect import init_security_headers
-        init_security_headers(app)
+        @app.after_request
+        def set_security_headers(response):
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['X-Frame-Options'] = 'DENY'
+            response.headers['X-XSS-Protection'] = '1; mode=block'
+            response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+            return response
         
         # Настройка Flask-Login
         login_manager.login_view = 'auth.login'
