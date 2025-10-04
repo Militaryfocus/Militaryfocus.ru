@@ -1,38 +1,76 @@
-Flask>=2.3.0
-Flask-SQLAlchemy>=3.0.0
-Flask-Login>=0.6.0
-Flask-WTF>=1.1.0
-Flask-Migrate>=4.0.0
-Flask-Admin>=1.6.0
-WTForms>=3.0.0
-Werkzeug>=2.3.0
-python-dotenv>=1.0.0
-Pillow>=9.0.0
-email-validator>=2.0.0
-bcrypt>=4.0.0
-python-slugify>=8.0.0
-markdown>=3.4.0
-bleach>=6.0.0
-openai>=1.0.0
-requests>=2.31.0
-schedule>=1.2.0
-faker>=20.0.0
-textstat>=0.7.0
-nltk>=3.8.0
-transformers>=4.30.0
-torch>=2.0.0
-psutil>=5.9.0
-lxml>=4.9.0
-beautifulsoup4>=4.12.0
-pymorphy3>=0.9.1
-scikit-learn>=1.3.0
-matplotlib>=3.7.0
-seaborn>=0.12.0
-numpy>=1.24.0
-prometheus-client>=0.17.0
-python-memcached>=1.62
-redis>=4.5.0
-anthropic>=0.7.0
-google-generativeai>=0.3.0
-aiohttp>=3.8.0
-jieba>=0.42.1
+# Core Flask dependencies
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-WTF==1.2.1
+Flask-Migrate==4.0.5
+Flask-Admin==1.6.1
+
+# Forms and validation
+WTForms==3.1.1
+email-validator==2.1.0.post1
+
+# Web server and environment
+Werkzeug==3.0.1
+python-dotenv==1.0.0
+gunicorn==21.2.0
+
+# Database
+SQLAlchemy==2.0.23
+alembic==1.13.0
+
+# Authentication and security
+bcrypt==4.1.2
+cryptography==41.0.7
+
+# Content processing
+python-slugify==8.0.1
+markdown==3.5.1
+bleach==6.1.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Image processing
+Pillow==10.1.0
+
+# AI/ML dependencies
+openai==1.3.8
+anthropic==0.7.7
+google-generativeai==0.3.1
+transformers==4.36.2
+torch==2.1.2
+nltk==3.8.1
+scikit-learn==1.3.2
+numpy==1.26.2
+
+# Text analysis
+textstat==0.7.3
+pymorphy3==1.2.1
+jieba==0.42.1
+
+# Data visualization
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Monitoring and caching
+prometheus-client==0.19.0
+redis==5.0.1
+python-memcached==1.62
+
+# System utilities
+psutil==5.9.6
+schedule==1.2.0
+
+# HTTP and async
+requests==2.31.0
+aiohttp==3.9.1
+
+# Development and testing
+faker==20.1.0
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.12.0
+flake8==6.1.0
+
+# Production server
+uwsgi==2.0.23
