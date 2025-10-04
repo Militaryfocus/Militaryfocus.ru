@@ -39,6 +39,11 @@ class User(UserMixin, db.Model):
         'allow_messages': True
     })
     
+    # 2FA поля
+    two_factor_secret = db.Column(db.String(32))
+    two_factor_enabled = db.Column(db.Boolean, default=False)
+    backup_codes = db.Column(JSON)
+    
     # Временные метки
     created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
