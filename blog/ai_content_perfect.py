@@ -46,6 +46,12 @@ except LookupError:
     nltk.download('stopwords')
     nltk.download('wordnet')
 
+# Дополнительные NLTK ресурсы
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    nltk.download('punkt_tab')
+
 class AIProvider(Enum):
     """Провайдеры ИИ"""
     OPENAI = "openai"
@@ -599,7 +605,8 @@ class AIProviderManager:
                     # Загрузка модели HuggingFace
                     model_name = "microsoft/DialoGPT-medium"
                     self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-                    self.model = AutoModel.from_pretrained(model_name)
+                    from transformers import AutoModelForCausalLM
+                    self.model = AutoModelForCausalLM.from_pretrained(model_name)
                 except Exception as e:
                     print(f"Failed to load local model: {e}")
             
@@ -652,8 +659,16 @@ class AIProviderManager:
             def _model_generate(self, prompt: str) -> str:
                 """Генерация с помощью модели"""
                 inputs = self.tokenizer.encode(prompt, return_tensors='pt')
+                input_length = inputs.shape[1]
                 with torch.no_grad():
-                    outputs = self.model.generate(inputs, max_length=100, num_return_sequences=1)
+                    outputs = self.model.generate(
+                        inputs, 
+                        max_length=input_length + 50,  # Добавляем 50 токенов к входной длине
+                        num_return_sequences=1,
+                        pad_token_id=self.tokenizer.eos_token_id,
+                        do_sample=True,
+                        temperature=0.7
+                    )
                 return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         
         return LocalProvider()
