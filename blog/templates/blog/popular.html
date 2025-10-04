@@ -136,7 +136,7 @@
                             </div>
                             <div class="col-4">
                                 <div class="stat-item">
-                                    <div class="stat-number text-info">{{ posts.items|sum(attribute='comments')|length if posts.items else 0 }}</div>
+                                    <div class="stat-number text-info">{{ posts.items|sum(attribute='comments_count') if posts.items else 0 }}</div>
                                     <div class="stat-label">Комментариев</div>
                                 </div>
                             </div>

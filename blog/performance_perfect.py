@@ -31,7 +31,13 @@ from sqlalchemy import text, func, and_, or_
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.pool import QueuePool
 from flask import request, g, current_app
-from werkzeug.contrib.cache import SimpleCache, MemcachedCache, RedisCache
+from werkzeug.cache import SimpleCache
+try:
+    from werkzeug.contrib.cache import MemcachedCache, RedisCache
+except ImportError:
+    # Fallback для новых версий Werkzeug
+    MemcachedCache = None
+    RedisCache = None
 import memcached
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 

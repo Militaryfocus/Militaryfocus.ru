@@ -750,7 +750,7 @@ class View(db.Model):
     duration = db.Column(db.Integer, default=0)  # В секундах
     
     # Связи
-    post = db.relationship('Post', backref=db.backref('post_views', lazy=True))
+    post = db.relationship('Post', backref=db.backref('post_views', lazy=True, overlaps="views,view_post"))
     user = db.relationship('User', backref=db.backref('user_views', lazy=True))
     
     # Индексы
@@ -844,7 +844,7 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     
     # Связи
-    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True))
+    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True, overlaps="notifications,notification_user"))
     
     # Индексы
     __table_args__ = (
@@ -886,7 +886,7 @@ class UserSession(db.Model):
     expires_at = db.Column(db.DateTime, nullable=True)
     
     # Связи
-    user = db.relationship('User', backref=db.backref('user_sessions', lazy=True))
+    user = db.relationship('User', backref=db.backref('user_sessions', lazy=True, overlaps="sessions,session_user"))
     
     # Индексы
     __table_args__ = (
