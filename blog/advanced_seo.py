@@ -17,7 +17,7 @@ import sqlite3
 from urllib.parse import urljoin, urlparse
 import xml.etree.ElementTree as ET
 
-from blog.models_perfect import Post, Category, Tag, User, View
+from blog.models import Post, Category, Tag, User, View
 from blog import db
 
 class TechnicalSEOChecker:

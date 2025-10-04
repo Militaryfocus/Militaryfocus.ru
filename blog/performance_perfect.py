@@ -41,7 +41,7 @@ except ImportError:
 import memcached
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 
-from blog.models_perfect import Post, User, Category, Comment, Tag
+from blog.models import Post, User, Category, Comment, Tag
 from blog import db
 from blog import db as database
 

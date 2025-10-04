@@ -8,7 +8,7 @@ import os
 import logging
 from dotenv import load_dotenv
 from blog import create_app, db
-from blog.models_perfect import User, Post, Category, Comment
+from blog.models import User, Post, Category, Comment
 
 # Настройка логирования
 logging.basicConfig(

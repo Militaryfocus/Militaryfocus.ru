@@ -4,7 +4,7 @@
 
 from flask import Blueprint, render_template, request, current_app
 from flask_login import login_required
-from blog.models_perfect import Post, Category, Comment, User
+from blog.models import Post, Category, Comment, User
 from blog import db
 
 bp = Blueprint('main', __name__)
@@ -97,7 +97,7 @@ def recent():
 @bp.route('/tags')
 def tags():
     """Все теги"""
-    from blog.models_perfect import Tag
+    from blog.models import Tag
     tags = Tag.query.all()
     return render_template('blog/tags.html', 
                          title='Все теги',

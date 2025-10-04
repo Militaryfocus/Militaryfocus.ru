@@ -25,7 +25,7 @@ import redis
 from prometheus_client import start_http_server, Counter, Histogram, Gauge
 
 # Импорт всех идеальных модулей
-from blog.models_perfect import *
+from blog.models import *
 from blog.security_perfect import *
 from blog.ai_content_perfect import *
 from blog.fault_tolerance_perfect import *

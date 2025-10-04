@@ -23,7 +23,7 @@ from werkzeug.security import check_password_hash
 import redis
 from sqlalchemy import and_, or_
 
-from blog.models_perfect import User, UserSession, View
+from blog.models import User, UserSession, View
 from blog import db
 from blog import db as database
 
@@ -326,7 +326,7 @@ class SecurityAuditLogger:
     def _log_to_database(self, log_entry: Dict[str, Any]):
         """Запись в базу данных"""
         try:
-            from blog.models_perfect import SecurityLog
+            from blog.models import SecurityLog
             security_log = SecurityLog(
                 event_type=log_entry['event_type'],
                 severity=log_entry['severity'],

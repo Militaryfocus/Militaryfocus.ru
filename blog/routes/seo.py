@@ -4,7 +4,7 @@ SEO маршруты для расширенной системы
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
-from blog.models_perfect import Post, Category, Tag, User
+from blog.models import Post, Category, Tag, User
 from blog.advanced_seo import advanced_seo_optimizer
 from blog.auto_seo_optimizer import AutoSEOOptimizer
 from blog.seo_analytics import SEOAnalytics

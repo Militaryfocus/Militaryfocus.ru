@@ -4,7 +4,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, current_app
 from flask_login import login_required, current_user
-from blog.models_perfect import Post, Category, Comment, Tag
+from blog.models import Post, Category, Comment, Tag
 from blog.forms import PostForm, CommentForm
 from blog import db
 from datetime import datetime

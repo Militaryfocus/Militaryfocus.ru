@@ -5,7 +5,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, PasswordField, BooleanField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from blog.models_perfect import User, Category
+from blog.models import User, Category
 
 class LoginForm(FlaskForm):
     """Форма входа"""

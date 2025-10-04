@@ -15,7 +15,7 @@ from enum import Enum
 import uuid
 from pathlib import Path
 
-from blog.models_perfect import Post, Category, Tag, Comment, User, View
+from blog.models import Post, Category, Tag, Comment, User, View
 from blog import db
 from blog.advanced_content_generator import (
     AdvancedContentGenerator, ContentRequest, ContentType, ContentTone, 

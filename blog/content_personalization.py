@@ -24,7 +24,7 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 import pandas as pd
 
-from blog.models_perfect import Post, Category, Tag, Comment, User, View
+from blog.models import Post, Category, Tag, Comment, User, View
 from blog import db
 from blog.ai_provider_manager import generate_with_ai
 
